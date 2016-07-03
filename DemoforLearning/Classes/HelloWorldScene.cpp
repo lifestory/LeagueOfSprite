@@ -33,6 +33,7 @@ bool HelloWorld::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+	//set a background image 
 	auto background = CCSprite::create("bb.jpg");
 	background->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 	this->addChild(background);
@@ -110,4 +111,23 @@ void HelloWorld::menuitem1Callback(Ref* pSender) {
 void HelloWorld::menuitem2Callback(Ref* pSender) {
 	auto item = (MenuItem*)pSender;
 	log("Touch menu item help %p", item);
+}
+
+void HelloWorld::onEnter() {
+	Layer::onEnter();
+	
+	auto listener = EventListenerKeyboard::create();
+	listener->onKeyPressed = [](EventKeyboard::KeyCode keycode, Event *event) {
+		log("key with keycode %d pressed", keycode);
+	};
+	
+	EventDispatcher *eventDispatcher = Director::getInstance()->getEventDispatcher();
+	eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+}
+
+void HelloWorld::onExit() {
+	Layer::onExit();
+
+	//code that cause error. To be solved.
+	//Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 }

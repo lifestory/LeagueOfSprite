@@ -13,6 +13,9 @@ public:
 
     virtual bool init();
     
+	virtual void onEnter();
+	virtual void onExit();
+
     // a selector callback
 	void menuCloseCallback(cocos2d::Ref* pSender);
 	void menuitem1Callback(cocos2d::Ref* pSender);
