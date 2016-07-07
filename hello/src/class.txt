@@ -1,2 +1,0 @@
-class
-This is class 1
