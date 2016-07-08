@@ -1,18 +1,14 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 
+
 USING_NS_CC;
 
-Scene* HelloWorld::createScene()
+HelloWorld* HelloWorld::createScene()
 {
     // 'scene' is an autorelease object
-    auto scene = Scene::create();
+    auto scene = HelloWorld::create();
     
-    // 'layer' is an autorelease object
-    auto layer = HelloWorld::create();
-
-    // add layer as a child to scene
-    scene->addChild(layer);
 
     // return the scene
     return scene;
@@ -23,7 +19,7 @@ bool HelloWorld::init()
 {
     //////////////////////////////
     // 1. super init first
-    if ( !Layer::init() )
+    if ( !Scene::init() )
     {
         return false;
     }
@@ -36,7 +32,7 @@ bool HelloWorld::init()
     //    you may modify it.
 
     // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
+    /*auto closeItem = MenuItemImage::create(
                                            "CloseNormal.png",
                                            "CloseSelected.png",
                                            CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
@@ -71,17 +67,58 @@ bool HelloWorld::init()
     sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
 
     // add the sprite as a child to this layer
-    this->addChild(sprite, 0);
+    this->addChild(sprite, 0);*/
+	auto background = Sprite::create("StartScene/startScene.png");
+	background->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+	this->addChild(background);
+
+	menu = Menu::create();
+	menu->setPosition(Vec2::ZERO);
+
+	playItem = MenuItemImage::create("StartScene/playClickBefore.png", "StartScene/playClickAfter.png", CC_CALLBACK_1(HelloWorld::ClickPlay, this));
+	playItem->setPosition(visibleSize.width / 2, visibleSize.height*0.15);
+	menu->addChild(playItem, 1);
+
+	helpItem = MenuItemImage::create("StartScene/helpClickBefore.png", "StartScene/helpClickAfter.png", CC_CALLBACK_1(HelloWorld::ClickHelp, this));
+	helpItem->setPosition(visibleSize.width - helpItem->getContentSize().width / 2, visibleSize.height*0.3);
+	menu->addChild(helpItem, 1);
+
+	settingItem = MenuItemImage::create("StartScene/setClickBefore.png", "StartScene/setClickAfter.png", CC_CALLBACK_1(HelloWorld::ClickSetting, this));
+	settingItem->setPosition(visibleSize.width - settingItem->getContentSize().width / 2, visibleSize.height*0.2);
+	menu->addChild(settingItem, 1);
+
+	aboutItem = MenuItemImage::create("StartScene/aboutClickBefore.png", "StartScene/aboutClickAfter.png", CC_CALLBACK_1(HelloWorld::ClickAbout, this));
+	aboutItem->setPosition(visibleSize.width - aboutItem->getContentSize().width / 2, visibleSize.height*0.1);
+	menu->addChild(aboutItem, 1);
+
+	this->addChild(menu, 1);
+
     
     return true;
 }
 
 
-void HelloWorld::menuCloseCallback(Ref* pSender)
-{
-    Director::getInstance()->end();
+void HelloWorld::ClickPlay(Ref *sender) {
+	auto scene = ModeChooseScene::create();
+	auto trans = TransitionPageTurn::create(0.5f, scene, false);
+	Director::getInstance()->replaceScene(trans);
+}
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
-#endif
+void HelloWorld::ClickHelp(Ref *sender) {
+	auto scene = HelpScene::create();
+	auto trans = TransitionPageTurn::create(0.5f, scene, false);
+	Director::getInstance()->replaceScene(trans);
+}
+
+void HelloWorld::ClickSetting(Ref *sender) {
+	auto settingScene = SettingScene::createScene();
+	auto trans = TransitionPageTurn::create(0.5f, settingScene, false);
+	Director::getInstance()->replaceScene(trans);
+
+}
+
+void HelloWorld::ClickAbout(Ref *sender) {
+	auto aboutScene = AboutScene::create();
+	auto trans = TransitionPageTurn::create(0.5f, aboutScene, false);
+	Director::getInstance()->replaceScene(trans);
 }
