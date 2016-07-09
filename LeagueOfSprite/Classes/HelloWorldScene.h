@@ -3,18 +3,35 @@
 
 #include "cocos2d.h"
 
-class HelloWorld : public cocos2d::Layer
+#include "SettingScene.h"
+#include "HelpScene.h"
+#include "AboutScene.h"
+#include "modeChooseScene.h"
+USING_NS_CC;
+
+class HelloWorld : public cocos2d::Scene
 {
 public:
-    static cocos2d::Scene* createScene();
+    static HelloWorld* createScene();
 
     virtual bool init();
     
-    // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
+
+	void ClickPlay(Ref* sender);
+	void ClickHelp(Ref* sender);
+	void ClickSetting(Ref* sender);
+	void ClickAbout(Ref* sender);
+
+private:
+	MenuItemImage *playItem;
+	MenuItemImage *helpItem;
+	MenuItemImage *settingItem;
+	MenuItemImage *aboutItem;
+	Menu *menu;
+
 };
 
 #endif // __HELLOWORLD_SCENE_H__
