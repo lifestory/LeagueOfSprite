@@ -3,7 +3,7 @@
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
+static cocos2d::Size designResolutionSize = cocos2d::Size(1024, 640);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
@@ -80,6 +80,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // run
     director->runWithScene(scene);
 
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/startSceneMusic.wma");
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/gameSceneMusic.mp3");
+	SimpleAudioEngine::getInstance()->preloadEffect("Sound/Click.wav");
+
     return true;
 }
 
@@ -88,13 +92,17 @@ void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
 
     // if you use SimpleAudioEngine, it must be pause
-    // SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+    SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 }
 
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground() {
     Director::getInstance()->startAnimation();
 
+
     // if you use SimpleAudioEngine, it must resume here
-    // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+	if (SoundManager::getInstance()->getMusic()) {
+		SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+	}
+    
 }
