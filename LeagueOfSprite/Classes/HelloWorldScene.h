@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef __HELLOWORLD_SCENE_H__
 #define __HELLOWORLD_SCENE_H__
 
@@ -7,6 +9,10 @@
 #include "HelpScene.h"
 #include "AboutScene.h"
 #include "modeChooseScene.h"
+#include "SoundManager.h"
+#include "SimpleAudioEngine.h"
+
+using namespace CocosDenshion;
 USING_NS_CC;
 
 class HelloWorld : public cocos2d::Scene
@@ -16,6 +22,7 @@ public:
 
     virtual bool init();
     
+	void cleanup();
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);

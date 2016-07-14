@@ -68,6 +68,10 @@ bool HelloWorld::init()
 
     // add the sprite as a child to this layer
     this->addChild(sprite, 0);*/
+
+	//play background music
+	//SoundManager::getInstance()->startSceneinit();
+
 	auto background = Sprite::create("StartScene/startScene.png");
 	background->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	this->addChild(background);
@@ -102,18 +106,33 @@ void HelloWorld::ClickPlay(Ref *sender) {
 	auto scene = ModeChooseScene::create();
 	auto trans = TransitionPageTurn::create(0.5f, scene, false);
 	Director::getInstance()->replaceScene(trans);
+	if (SoundManager::getInstance()->getEffect()) {
+		SimpleAudioEngine::getInstance()->playEffect("Sound/Click.wav");
+	}
 }
 
 void HelloWorld::ClickHelp(Ref *sender) {
 	auto scene = HelpScene::create();
 	auto trans = TransitionPageTurn::create(0.5f, scene, false);
 	Director::getInstance()->replaceScene(trans);
+	if (SoundManager::getInstance()->getEffect()) {
+		SimpleAudioEngine::getInstance()->playEffect("Sound/Click.wav");
+	}
 }
 
 void HelloWorld::ClickSetting(Ref *sender) {
-	auto settingScene = SettingScene::createScene();
-	auto trans = TransitionPageTurn::create(0.5f, settingScene, false);
-	Director::getInstance()->replaceScene(trans);
+	//auto settingScene = SettingScene::createScene();
+	//auto trans = TransitionPageTurn::create(0.5f, settingScene, false);
+	if (SettingScene::getInstance() == NULL) {
+		auto settingScene = SettingScene::createScene();
+		auto trans = TransitionPageTurn::create(0.5f, settingScene, false);
+		Director::getInstance()->replaceScene(trans);
+	} else {
+		Director::getInstance()->popScene();
+	}
+	if (SoundManager::getInstance()->getEffect()) {
+		SimpleAudioEngine::getInstance()->playEffect("Sound/Click.wav");
+	}
 
 }
 
@@ -121,4 +140,11 @@ void HelloWorld::ClickAbout(Ref *sender) {
 	auto aboutScene = AboutScene::create();
 	auto trans = TransitionPageTurn::create(0.5f, aboutScene, false);
 	Director::getInstance()->replaceScene(trans);
+	if (SoundManager::getInstance()->getEffect()) {
+		SimpleAudioEngine::getInstance()->playEffect("Sound/Click.wav");
+	}
+}
+
+void HelloWorld::cleanup() {
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 }

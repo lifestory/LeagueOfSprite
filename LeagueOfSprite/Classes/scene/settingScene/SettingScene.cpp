@@ -1,7 +1,14 @@
 #include "SettingScene.h"
 
+SettingScene* SettingScene::settingScene = NULL;
+
+SettingScene* SettingScene::getInstance() {
+	return settingScene;
+}
+
 SettingScene* SettingScene::createScene() {
 	auto scene = SettingScene::create();
+	settingScene = scene;
 	return scene;
 }
 
@@ -58,13 +65,13 @@ bool SettingScene::init() {
 void SettingScene::ClickBack(Ref* sender) {
 	auto hello = HelloWorld::createScene();
 	auto trans = TransitionPageTurn::create(0.5f, hello, false);
-	Director::getInstance()->replaceScene(trans);
+	Director::getInstance()->pushScene(trans);
 }
 
 void SettingScene::onMusicEnabled(Ref* sender) {
-
+	SoundManager::getInstance()->turnOnOffMusic(musicControl->getSelectedIndex());
 }
 
 void SettingScene::onEffectEnabled(Ref* sender) {
-
+	SoundManager::getInstance()->turnOnOffEffect(effectControl->getSelectedIndex());
 }

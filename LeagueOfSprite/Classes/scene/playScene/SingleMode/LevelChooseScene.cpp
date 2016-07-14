@@ -47,7 +47,9 @@ bool LevelChooseScene::init() {
 
 
 void LevelChooseScene::ClickLevel1(Ref *sender) {
-
+	SimpleAudioEngine::getInstance()->playEffect("Sound/Click.wav");
+	auto scene = GameScene::create();
+	Director::getInstance()->replaceScene(scene);
 }
 
 void LevelChooseScene::ClickLevel2(Ref *sender) {

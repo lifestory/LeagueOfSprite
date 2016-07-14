@@ -33,7 +33,7 @@ bool ModeChooseScene::init() {
 	menu->addChild(singleMode);
 
 	soloMode = MenuItemImage::create("PlayScene/modeChooseScene/soloClickBefore.png", "PlayScene/modeChooseScene/soloClickAfter.png", CC_CALLBACK_1(ModeChooseScene::ClickSolo, this));
-	soloMode->setPosition(visibleSize.width / 2, visibleSize.height*0.5);
+	soloMode->setPosition(visibleSize.width / 2, visibleSize.height*0.4);
 	menu->addChild(soloMode);
 		
 	this->addChild(menu, 1);
@@ -42,12 +42,14 @@ bool ModeChooseScene::init() {
 }
 
 void ModeChooseScene::ClickBack(Ref *sender) {
+	SimpleAudioEngine::getInstance()->playEffect("Sound/Click.wav");
 	auto scene = HelloWorld::create();
 	auto trans = TransitionPageTurn::create(0.5f, scene, false);
 	Director::getInstance()->replaceScene(trans);
 }
 
 void ModeChooseScene::ClickSingle(Ref *sender) {
+	SimpleAudioEngine::getInstance()->playEffect("Sound/Click.wav");
 	auto scene = LevelChooseScene::create();
 	auto trans = TransitionPageTurn::create(0.5f, scene, false);
 	Director::getInstance()->replaceScene(trans);
