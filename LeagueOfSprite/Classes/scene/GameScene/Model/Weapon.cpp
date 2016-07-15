@@ -4,7 +4,7 @@
 Sprite* Weapon::newWeapon(Vec2 position)
 {
 	Sprite * new_weapon = Sprite::create("Model/stone.png");
-	auto weaponBody = PhysicsBody::createBox(new_weapon->getContentSize());
+	auto weaponBody = PhysicsBody::createBox(new_weapon->getContentSize(), PhysicsMaterial(0.1f, 0.0f, 0.99f));
 	
 
 	float a = 600;

@@ -59,12 +59,12 @@ bool Player::init()
 	shootAnimate->setVisible(false);
 	this->addChild(shootAnimate, 1);
 
-	auto body = PhysicsBody::createBox(Size(stand->getContentSize().width*0.5, stand->getContentSize().height), PhysicsMaterial(0.1f, 0.0f, 0.0f));
+	auto body = PhysicsBody::createBox(Size(stand->getContentSize().width*0.6,stand->getContentSize().height),  PhysicsMaterial(0.1f, 0.0f, 0.99f));
 	body->setTag(Constant::getPlayerTag());
 	body->setRotationEnable(false);
 	this->setPhysicsBody(body);
 	this->getPhysicsBody()->setCategoryBitmask(0x0000000F);
-	this->getPhysicsBody()->setCollisionBitmask(0x0000000F);
+	this->getPhysicsBody()->setCollisionBitmask(0x000000FF);
 	this->getPhysicsBody()->setContactTestBitmask(0x0000000F);
 
 	return true;
@@ -151,4 +151,12 @@ void Player::stopShooting() {
 	stand->setVisible(true);
 	shootAnimate->setVisible(false);
 	runAnimate->setVisible(false);
+}
+
+void Player::releasePlayer() {
+	if (player_ != NULL) {
+		player_->removeFromParentAndCleanup(true);
+		//player_->removeAllChildrenWithCleanup(true);
+		player_ = NULL;
+	}
 }

@@ -5,6 +5,7 @@
 #include "cocos2d.h"
 #include ".\scene\GameScene\Model\Player.h"
 #include "Weapon.h"
+#include "ProgressView.h"
 #include "WeaponBezier.h"
 
 USING_NS_CC;
@@ -16,12 +17,14 @@ public:
 	virtual bool init();
 	CREATE_FUNC(PlayerController);
 	
-	//Player* getPlayer();
+	Player* getPlayer();
 
 	bool getOnAir();
 	bool getSecondJump();
 	void setOnAir(bool set);
 	void setSecondJump(bool set);
+
+	void releasePlayerController();
 
 	//¼üÅÌ¿ØÖÆ
 	virtual void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
@@ -31,6 +34,7 @@ public:
 private:
 	static PlayerController* playercontroller_;
 	Player* player_;
+	ProgressView* bloodbar;
 	bool onAir;
 	bool secondJump;
 };

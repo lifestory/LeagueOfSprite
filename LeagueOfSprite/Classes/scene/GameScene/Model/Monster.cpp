@@ -70,13 +70,19 @@ bool Monster::init() {
 	forwardAnimate->setVisible(false);
 	this->addChild(forwardAnimate, 1);*/
 
-	auto body = PhysicsBody::createBox(standAnimate->getContentSize()*0.8, PhysicsMaterial(0.1f, 0.0f, 1.0f));
+	auto body = PhysicsBody::createBox(standAnimate->getContentSize()*0.8, PhysicsMaterial(0.1f, 0.0f, 0.99f));
 	body->setRotationEnable(false);
+	//body->setDynamic(false);
+	body->setVelocityLimit(200);
 	this->setPhysicsBody(body);
 	this->getPhysicsBody()->setTag(Constant::getMonsterTag());
 	this->getPhysicsBody()->setCategoryBitmask(0x000000FF);
 	this->getPhysicsBody()->setCollisionBitmask(0x0000000F);
 	this->getPhysicsBody()->setContactTestBitmask(0x0000000F);
+
+	//init status
+	maxhp = 100;
+	curhp = 100;
 
 	return true;
 }
@@ -93,4 +99,20 @@ void Monster::beingHit() {
 void Monster::restoreStand() {
 	standAnimate->setVisible(true);
 	injuredAnimate->setVisible(false);
+}
+
+void Monster::releaseMonster() {
+	if (monster_ != NULL) {
+		//monster_->removeAllChildrenWithCleanup(true);
+		monster_->removeFromParentAndCleanup(true);
+		monster_ = NULL;
+	}
+}
+
+void Monster::setHp(int value) {
+	curhp = value;
+}
+
+int Monster::getHp() {
+	return curhp;
 }

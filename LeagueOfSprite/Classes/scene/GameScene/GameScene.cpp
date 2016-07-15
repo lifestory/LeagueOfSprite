@@ -33,12 +33,20 @@ bool GameScene::init() {
 	spbk->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 	this->addChild(spbk);
 
+	//add pause menuitem
+	/*MenuItemImage* pPauseItem = MenuItemImage::create("GameScene/Pause/PauseClickBefore.png", "GameScene/Pause/PauseClickAfter.png", this, menu_selector(GameScene::ClickStop));
+	pPauseItem->setPosition(Vec2(visibleSize.width - pPauseItem->getContentSize().width / 2, visibleSize.height - pPauseItem->getContentSize().height / 2));
+	auto pMenu = Menu::create(pPauseItem, NULL);
+	pMenu->setPosition(0, 0);
+	this->addChild(pMenu, 1);*/
+
 	//add player
 	this->addChild(PlayerController::getInstance(), 1);
 	this->addChild(MonsterController::getInstance(), 1);
+	
 
 	auto ground = Node::create();
-	auto body = PhysicsBody::createEdgeSegment(Vec2(0, 100), Vec2(1280, 100));
+	auto body = PhysicsBody::createEdgeSegment(Vec2(0, 100), Vec2(1280, 100), PhysicsMaterial(0.99f, 0.0f, 0.99f));
 	body->setTag(Constant::getEdgeTag());
 	ground->setPhysicsBody(body);
 	//ground->getPhysicsBody()->setDynamic(false);
@@ -57,9 +65,9 @@ bool GameScene::init() {
 	//ground->getPhysicsBody()->setDynamic(false);
 	leftwall->getPhysicsBody()->setGravityEnable(false);
 	leftwall->getPhysicsBody()->setDynamic(false);
-	leftwall->getPhysicsBody()->setCategoryBitmask(0x000000FF);
+	leftwall->getPhysicsBody()->setCategoryBitmask(0x000000F0);
 	leftwall->getPhysicsBody()->setCollisionBitmask(0xFFFFFFFF);
-	leftwall->getPhysicsBody()->setContactTestBitmask(0x0000000F);
+	leftwall->getPhysicsBody()->setContactTestBitmask(0x00000000);
 
 	this->addChild(leftwall, 1);
 
@@ -80,6 +88,11 @@ bool GameScene::init() {
 	listener->onContactSeparate = CC_CALLBACK_1(GameScene::onContactSeparate, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
+	//add keyboardEventListener
+	auto keylistener = EventListenerKeyboard::create();
+	keylistener->onKeyPressed = CC_CALLBACK_2(GameScene::onKeyPressed, this);
+	keylistener->onKeyReleased = CC_CALLBACK_2(GameScene::onKeyReleased, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(keylistener, this);
 	return true;
 }
 
@@ -107,11 +120,15 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 	if (tagA == Constant::getMonsterTag() && tagB == Constant::getArrowTag()) {
 		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		MonsterController::getInstance()->getMonster()->beingHit();
+		MonsterController::getInstance()->updateBloodbarforDamaging(10);
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - 10);
 		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 	}
 	else if (tagB == Constant::getMonsterTag() && tagA == Constant::getArrowTag()) {
 		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		MonsterController::getInstance()->getMonster()->beingHit();
+		MonsterController::getInstance()->updateBloodbarforDamaging(10);
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - 10);
 		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 	}
 
@@ -130,5 +147,33 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 }
 
 void GameScene::onContactSeparate(PhysicsContact& contact) {
+
+}
+
+void GameScene::ClickStop(CCObject* pSender)
+{
+	CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
+	CCRenderTexture *renderTexture = CCRenderTexture::create(visibleSize.width, visibleSize.height);
+
+
+	renderTexture->begin();
+	this->visit();
+	renderTexture->end();
+
+	CCDirector::sharedDirector()->pushScene(GamePause::scene(renderTexture));
+}
+
+void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
+	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
+		CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
+		CCRenderTexture *renderTexture = CCRenderTexture::create(visibleSize.width, visibleSize.height);
+		renderTexture->begin();
+		this->visit();
+		renderTexture->end();
+		CCDirector::sharedDirector()->pushScene(GamePause::scene(renderTexture));
+	}
+}
+
+void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
 
 }

@@ -16,6 +16,8 @@ public:
 	CREATE_FUNC(Player);
 	virtual bool init();
 
+	void releasePlayer();
+
 	//ÑªÁ¿
 	void setHP(int num);
 	int getHP();

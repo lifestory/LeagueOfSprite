@@ -25,7 +25,7 @@ PlayerController* PlayerController::getInstance()
 	if (playercontroller_ == NULL)
 	{
 		playercontroller_ = PlayerController::create();
-		playercontroller_->setPosition(100, 100);
+		playercontroller_->setPosition(Vec2::ZERO);
 		playercontroller_->setAnchorPoint(Point::ZERO);
 	}
 	return playercontroller_;
@@ -40,8 +40,8 @@ bool PlayerController::init()
 
 	//player_ = Player::getInstance();
 	player_ = Player::getInstance();
-	player_->setTag(100);
-	player_->setPosition(Point(100, 100));
+	//player_->setTag(100);
+	player_->setPosition(Point(100, 200));
 	this->addChild(player_);
 	player_->setHP(100);
 	player_->setMP(100);
@@ -50,10 +50,20 @@ bool PlayerController::init()
 	onAir = false;
 	secondJump = false;
 
-	//add weapon
-	//auto weapon_ = Weapon::getInstance();
-	//weapon_->setPosition(player_->getPosition());
-	//this->addChild(weapon_);
+	//create bloodbar
+	bloodbar = new ProgressView();
+	bloodbar->setPosition(Point(200, 600));
+	bloodbar->setScale(3.0f);
+	bloodbar->setBackgroundTexture("GameScene/ProgressView/back.png");
+	bloodbar->setFrontgroundTexture("GameScene/ProgressView/front.png");
+	bloodbar->setTotalProgress(100);
+	bloodbar->setCurrentProgress(100);
+	auto edge = Sprite::create("GameScene/ProgressView/edge.png");
+	edge->setPosition(Point(bloodbar->getPositionX(), bloodbar->getPositionY()));
+	auto avatar = Sprite::create("GameScene/ProgressView/player_avatar.png");
+	avatar->setPosition(Point(bloodbar->getPositionX() - 150, bloodbar->getPositionY()));
+	this->addChild(avatar, 2);
+	this->addChild(bloodbar, 2);
 
 	//add keyboard listener
 	auto listener = EventListenerKeyboard::create();
@@ -64,10 +74,10 @@ bool PlayerController::init()
 	return true;
 }
 
-//Player* PlayerController::getPlayer()
-//{
-//	return player_;
-//}
+Player* PlayerController::getPlayer()
+{
+	return player_;
+}
 
 
 //¼üÅÌ¿ØÖÆ
@@ -79,8 +89,6 @@ void PlayerController::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event
 	} else if (keyCode == EventKeyboard::KeyCode::KEY_D) {
 		player_->run(direction::right);
 	} else if (keyCode == EventKeyboard::KeyCode::KEY_W) {
-		log("PlayerController_OnAir: %d", PlayerController::getInstance()->getOnAir());
-		log("PlayerController_SecondJump: %d", PlayerController::getInstance()->getSecondJump());
 		if (getOnAir() == false) {
 			player_->jump();
 			setOnAir(true);
@@ -129,4 +137,15 @@ void PlayerController::setOnAir(bool set) {
 
 void PlayerController::setSecondJump(bool set) {
 	secondJump = set;
+}
+
+void PlayerController::releasePlayerController() {
+	if (playercontroller_ != NULL) {
+		//playercontroller_->getPlayer()->removeFromParentAndCleanup(true);
+		playercontroller_->getPlayer()->releasePlayer();
+		playercontroller_->removeAllChildrenWithCleanup(true);
+		playercontroller_->removeFromParentAndCleanup(true);
+		//playercontroller_->release();
+		playercontroller_ = NULL;
+	}
 }

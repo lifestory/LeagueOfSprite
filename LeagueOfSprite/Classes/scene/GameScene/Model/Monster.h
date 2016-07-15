@@ -14,8 +14,13 @@ public:
 	virtual bool init();
 	CREATE_FUNC(Monster);
 
+	void releaseMonster();
+
 	void restoreStand();
 	void beingHit();
+
+	void setHp(int value);
+	int getHp();
 
 private:
 	static Monster* monster_;
@@ -25,5 +30,8 @@ private:
 	Sprite* attackAnimate;
 	Animate* injuringAction;
 	Animate* standingAction;
+	//basic information
+	int curhp;
+	int maxhp;
 };
 #endif
