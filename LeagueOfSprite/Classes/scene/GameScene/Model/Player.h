@@ -16,6 +16,9 @@ public:
 	CREATE_FUNC(Player);
 	virtual bool init();
 
+	void releasePlayer();
+
+
 	//ÑªÁ¿
 	void setHP(int num);
 	int getHP();
@@ -35,6 +38,14 @@ public:
 	void shoot();
 	void stopShooting();
 
+	Animate* getHealAnimate();
+	void playHealAnimate();
+	void healAnimateEnded();
+
+	Animate* getShieldAnimate();
+	void playShieldAnimate();
+	void shieldAnimateEnded();
+
 private:
 	static Player* player_;
 	int hp_num;
@@ -45,5 +56,9 @@ private:
 	Sprite* stand;
 	Sprite* runAnimate;
 	Sprite* shootAnimate;
+
+	Sprite *healAnimate;
+	Sprite *shieldAnimate;
+
 };
 #endif // !_PLAYER_H_

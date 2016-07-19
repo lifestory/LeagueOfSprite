@@ -10,6 +10,8 @@
 #include "MonsterController.h"
 #include "Constant.h"
 #include "SoundManager.h"
+#include "GamePause.h"
+#include "ProgressView.h"
 
 #include "SimpleAudioEngine.h"
 #include "ui/CocosGUI.h"
@@ -26,11 +28,15 @@ public:
 	bool onContactBegin(PhysicsContact& contact);
 	void onContactSeparate(PhysicsContact& contact);
 
-	//void ClickBack(Ref* sender);
+	virtual void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
+	virtual void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
+	
+	void ClickStop(CCObject* sender);
 	void updata(float t);
 
 private:
 	bool isGameOver;
+	ProgressView* pro;
 };
 
 #endif

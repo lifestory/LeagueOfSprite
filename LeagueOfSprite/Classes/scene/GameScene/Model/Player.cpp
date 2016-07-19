@@ -24,6 +24,7 @@ Player* Player::getInstance()
 	if (player_ == NULL)
 	{
 		player_ = Player::create();
+		//player_->setPosition(100, 200);
 	}
 	
 	return player_;
@@ -59,12 +60,22 @@ bool Player::init()
 	shootAnimate->setVisible(false);
 	this->addChild(shootAnimate, 1);
 
-	auto body = PhysicsBody::createBox(Size(stand->getContentSize().width*0.5, stand->getContentSize().height), PhysicsMaterial(0.1f, 0.0f, 0.0f));
+	//heal animate
+	healAnimate = Sprite::create("Model/Player/skills/healAnimation/0.png");
+	healAnimate->setVisible(false);
+	this->addChild(healAnimate, 1);
+
+	//shield animate
+	shieldAnimate = Sprite::create("Model/Player/skills/shieldAnimation/0.png");
+	shieldAnimate->setVisible(false);
+	this->addChild(shieldAnimate, 1);
+
+	auto body = PhysicsBody::createBox(Size(stand->getContentSize().width*0.6,stand->getContentSize().height),  PhysicsMaterial(0.1f, 0.0f, 0.99f));
 	body->setTag(Constant::getPlayerTag());
 	body->setRotationEnable(false);
 	this->setPhysicsBody(body);
 	this->getPhysicsBody()->setCategoryBitmask(0x0000000F);
-	this->getPhysicsBody()->setCollisionBitmask(0x0000000F);
+	this->getPhysicsBody()->setCollisionBitmask(0x000000FF);
 	this->getPhysicsBody()->setContactTestBitmask(0x0000000F);
 
 	return true;
@@ -151,4 +162,57 @@ void Player::stopShooting() {
 	stand->setVisible(true);
 	shootAnimate->setVisible(false);
 	runAnimate->setVisible(false);
+}
+
+void Player::releasePlayer() {
+	if (player_ != NULL) {
+		player_->removeFromParentAndCleanup(true);
+		//player_->removeAllChildrenWithCleanup(true);
+		player_ = NULL;
+	}
+}
+
+Animate* Player::getHealAnimate() {
+	auto healing = Animation::create();
+	for (int i = 0; i < 9; i++) {
+		char filename[128] = { 0 };
+		sprintf(filename, "Model/Player/skills/healAnimation/%d.png", i);
+		healing->addSpriteFrameWithFileName(filename);
+	}
+	healing->setDelayPerUnit(2.0 / 8);
+	auto heal = Animate::create(healing);
+	return heal;
+}
+
+void Player::playHealAnimate() {
+	healAnimate->setVisible(true);
+	auto action = getHealAnimate();
+	healAnimate->runAction(Sequence::create(action, CallFunc::create(CC_CALLBACK_0(Player::healAnimateEnded, this)), NULL));
+}
+
+void Player::healAnimateEnded() {
+	healAnimate->setVisible(false);
+}
+
+Animate* Player::getShieldAnimate() {
+	auto shield = Animation::create();
+	for (int i = 0; i < 2; i++) {
+		char filename[128] = { 0 };
+		sprintf(filename, "Model/Player/skills/shieldAnimation/%d.png", i);
+		shield->addSpriteFrameWithFileName(filename);
+	}
+	shield->setDelayPerUnit(0.3f);
+	shield->setLoops(5);
+	auto animate = Animate::create(shield);
+	return animate;
+}
+
+void Player::playShieldAnimate() {
+	shieldAnimate->setVisible(true);
+	auto action = getShieldAnimate();
+	shieldAnimate->runAction(Sequence::create(action, CallFunc::create(CC_CALLBACK_0(Player::shieldAnimateEnded, this)), NULL));
+}
+
+void Player::shieldAnimateEnded() {
+	shieldAnimate->setVisible(false);
 }
