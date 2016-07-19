@@ -1,9 +1,9 @@
 #include "GamePause.h"
 
 
-CCScene* GamePause::scene(CCRenderTexture* sqr)
+CCScene* GamePause::scene(RenderTexture* sqr)
 {
-	CCScene* scene = CCScene::create();
+	Scene* scene = Scene::create();
 	GamePause* layer = GamePause::create();
 	//add scene onto the gamelayer
 	scene->addChild(layer, 1);
@@ -57,12 +57,12 @@ bool GamePause::init()
 
 
 //continue
-void GamePause::ContinueGame(CCObject* pSender)
+void GamePause::ContinueGame(Object* pSender)
 {
 	Director::getInstance()->popScene();
 }
 //restart
-void GamePause::RestartGame(CCObject* pSender)
+void GamePause::RestartGame(Object* pSender)
 {
 
 	Director::getInstance()->popScene();
@@ -79,7 +79,7 @@ void GamePause::RestartGame(CCObject* pSender)
 	//CCDirector::sharedDirector()->replaceScene(GameScene::scene());
 }
 //jump to Mainmenu
-void GamePause::JumpMainmenu(CCObject* pSender)
+void GamePause::JumpMainmenu(Object* pSender)
 {
 	//PlayerController::getInstance()->getParent()->removeAllChildrenWithCleanup(true);
 	//PlayerController::getInstance()->removeFromParent();

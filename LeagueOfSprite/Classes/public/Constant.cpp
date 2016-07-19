@@ -19,3 +19,8 @@ int Constant::playerTag = 16; //16
 int Constant::getPlayerTag() {
 	return playerTag;
 }
+
+int Constant::stormTag = 17; //17
+int Constant::getStormTag() {
+	return stormTag;
+}

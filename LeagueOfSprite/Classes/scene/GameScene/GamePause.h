@@ -7,7 +7,7 @@
 #include ".\scene\playScene\modeChooseScene.h"
 USING_NS_CC;
 
-class GamePause : public cocos2d::CCLayer
+class GamePause : public cocos2d::Layer
 {
 public:
 	virtual bool init();
@@ -15,14 +15,14 @@ public:
 	CREATE_FUNC(GamePause);
 
 
-	static cocos2d::CCScene* scene(CCRenderTexture* sqr);
+	static cocos2d::Scene* scene(RenderTexture* sqr);
 
 	//continue
-	void ContinueGame(CCObject* pSender);
+	void ContinueGame(Object* pSender);
 	//restart
-	void RestartGame(CCObject* pSender);
+	void RestartGame(Object* pSender);
 	//jump to Mainmenu
-	void JumpMainmenu(CCObject* pSender);
+	void JumpMainmenu(Object* pSender);
 private:
 	MenuItemImage *ContinueGameItem;
 	MenuItemImage *RestartGameItem;

@@ -132,6 +132,30 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 	}
 
+	//storm hit monster
+	if (tagA == Constant::getEdgeTag() && tagB == Constant::getStormTag()) {
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (tagB == Constant::getEdgeTag() && tagA == Constant::getStormTag()) {
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+
+	//storm hit right wall
+	if (tagA == Constant::getMonsterTag() && tagB == Constant::getStormTag()) {
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		MonsterController::getInstance()->getMonster()->beingHit();
+		MonsterController::getInstance()->updateBloodbarforDamaging(10);
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - 10);
+		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+	}
+	else if (tagB == Constant::getMonsterTag() && tagA == Constant::getStormTag()) {
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		MonsterController::getInstance()->getMonster()->beingHit();
+		MonsterController::getInstance()->updateBloodbarforDamaging(10);
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - 10);
+		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+	}
+
 	//player land ground
 	if (tagA == Constant::getPlayerTag() && tagB == Constant::getEdgeTag()) {
 		PlayerController::getInstance()->setOnAir(false);
@@ -175,5 +199,5 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
 }
 
 void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
-
+	
 }
