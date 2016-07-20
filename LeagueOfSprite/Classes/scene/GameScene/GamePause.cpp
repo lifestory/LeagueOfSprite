@@ -25,7 +25,7 @@ CCScene* GamePause::scene(RenderTexture* sqr)
 //add CCreanerTextrue as a screenshot
 bool GamePause::init()
 {
-	if (!CCLayer::init())
+	if (!Layer::init())
 	{
 		return false;
 	}
@@ -61,22 +61,16 @@ void GamePause::ContinueGame(Object* pSender)
 {
 	Director::getInstance()->popScene();
 }
+
 //restart
 void GamePause::RestartGame(Object* pSender)
 {
-
 	Director::getInstance()->popScene();
 	PlayerController::getInstance()->releasePlayerController();
 	MonsterController::getInstance()->releaseMonsterController();
-	//PlayerController::getInstance()->removeFromParentAndCleanup(true);
-	//MonsterController::getInstance()->removeFromParentAndCleanup(true);
-	//PlayerController::getInstance()->removeFromParent();
-	//MonsterController::getInstance()->removeFromParent();
-
 	auto scene = GameScene::create();
 	auto trans = TransitionPageTurn::create(0.5f, scene, false);
 	Director::getInstance()->replaceScene(trans);
-	//CCDirector::sharedDirector()->replaceScene(GameScene::scene());
 }
 //jump to Mainmenu
 void GamePause::JumpMainmenu(Object* pSender)

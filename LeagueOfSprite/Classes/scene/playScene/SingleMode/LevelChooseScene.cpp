@@ -25,7 +25,7 @@ bool LevelChooseScene::init() {
 	menu->setPosition(Vec2::ZERO);
 
 	back = MenuItemImage::create("PlayScene/backClickBefore.png", "PlayScene/backClickAfter.png", CC_CALLBACK_1(LevelChooseScene::ClickBack, this));
-	//back->setPosition(visibleSize.width / 2, visibleSize.height*0.1);
+	back->setPosition(visibleSize.width / 2, visibleSize.height*0.1);
 	menu->addChild(back);
 
 	level1 = MenuItemImage::create("PlayScene/modeChooseScene/SingleMode/level1.png", "PlayScene/modeChooseScene/SingleMode/level1.png", CC_CALLBACK_1(LevelChooseScene::ClickLevel1, this));

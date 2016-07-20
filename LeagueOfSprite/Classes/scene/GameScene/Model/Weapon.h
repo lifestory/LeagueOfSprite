@@ -15,7 +15,7 @@ class Weapon : public cocos2d::Sprite
 public:
 	//static Weapon* getInstance();
 	CREATE_FUNC(Weapon);
-	static Sprite* newWeapon(Vec2 position);
+	static Sprite* newWeapon(Vec2 position, float v);
 	//void moveWeapon(float t);
 	
 private:

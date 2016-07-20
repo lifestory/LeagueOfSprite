@@ -80,7 +80,7 @@ bool HelloWorld::init()
 	menu->setPosition(Vec2::ZERO);
 
 	playItem = MenuItemImage::create("StartScene/playClickBefore.png", "StartScene/playClickAfter.png", CC_CALLBACK_1(HelloWorld::ClickPlay, this));
-	playItem->setPosition(visibleSize.width / 2, visibleSize.height*0.15);
+	playItem->setPosition(visibleSize.width -playItem->getContentSize().width/2, visibleSize.height*0.4);
 	menu->addChild(playItem, 1);
 
 	helpItem = MenuItemImage::create("StartScene/helpClickBefore.png", "StartScene/helpClickAfter.png", CC_CALLBACK_1(HelloWorld::ClickHelp, this));

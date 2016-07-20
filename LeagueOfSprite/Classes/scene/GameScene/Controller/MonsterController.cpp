@@ -35,7 +35,7 @@ bool MonsterController::init() {
 	bloodbar->setCurrentProgress(100);
 	auto edge = Sprite::create("GameScene/ProgressView/edge.png");
 	edge->setPosition(Point(bloodbar->getPositionX(), bloodbar->getPositionY()));
-	auto avatar = Sprite::create("GameScene/ProgressView/player_avatar.png");
+	auto avatar = Sprite::create("GameScene/ProgressView/monster_avatar.png");
 	avatar->setPosition(Point(bloodbar->getPositionX() + 150, bloodbar->getPositionY()));
 	this->addChild(avatar, 2);
 	this->addChild(bloodbar, 2);
@@ -54,7 +54,7 @@ void MonsterController::releaseMonsterController() {
 
 void MonsterController::updateBloodbarforDamaging(int damage) {
 	int monsterHp = monster->getHp();
-	if (monsterHp > damage) {
+	if (monsterHp >= damage) {
 		bloodbar->setCurrentProgress(monsterHp - damage);
 	} else {
 		bloodbar->setCurrentProgress(0);
@@ -62,5 +62,10 @@ void MonsterController::updateBloodbarforDamaging(int damage) {
 }
 
 void MonsterController::updateBlood(int value) {
-	monster->setHp(value);
+	if (value > 0) {
+		monster->setHp(value);
+	} else {
+		monster->setHp(0);
+	}
+	
 }

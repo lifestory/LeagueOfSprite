@@ -46,6 +46,11 @@ public:
 	void playShieldAnimate();
 	void shieldAnimateEnded();
 
+	ProgressTimer* getPowerBar();
+	void setPowerBar(float v);
+	static ProgressTimer* getpowerBar();
+	float getPowerBarPercentage();
+
 private:
 	static Player* player_;
 	int hp_num;
@@ -59,6 +64,10 @@ private:
 
 	Sprite *healAnimate;
 	Sprite *shieldAnimate;
+
+	//power bar
+	static ProgressTimer *powerBar;
+	Sprite *bar;
 
 };
 #endif // !_PLAYER_H_

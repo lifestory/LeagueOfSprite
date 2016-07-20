@@ -26,6 +26,8 @@ bool GameScene::init() {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+	isGameEnded = false;
+
 	//add map
 	auto spbk = Sprite::create("GameScene/scene1.png");
 	//spbk->setPosition(Point::ZERO);
@@ -46,12 +48,13 @@ bool GameScene::init() {
 	
 
 	auto ground = Node::create();
-	auto body = PhysicsBody::createEdgeSegment(Vec2(0, 100), Vec2(1280, 100), PhysicsMaterial(0.99f, 0.0f, 0.99f));
+	auto body = PhysicsBody::createEdgeBox(Size(visibleSize.width, visibleSize.height*0.1) /*PhysicsMaterial(0.99f, 0.0f, 0.99f)*/);
 	body->setTag(Constant::getEdgeTag());
 	ground->setPhysicsBody(body);
+	ground->setPosition(visibleSize.width / 2, visibleSize.height*0.05);
 	//ground->getPhysicsBody()->setDynamic(false);
 	ground->getPhysicsBody()->setGravityEnable(false);
-	ground->getPhysicsBody()->setDynamic(false);
+	//ground->getPhysicsBody()->setDynamic(false);
 	ground->getPhysicsBody()->setCategoryBitmask(0x000000FF);
 	ground->getPhysicsBody()->setCollisionBitmask(0xFFFFFFFF);
 	ground->getPhysicsBody()->setContactTestBitmask(0x0000000F);
@@ -93,6 +96,9 @@ bool GameScene::init() {
 	keylistener->onKeyPressed = CC_CALLBACK_2(GameScene::onKeyPressed, this);
 	keylistener->onKeyReleased = CC_CALLBACK_2(GameScene::onKeyReleased, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keylistener, this);
+
+	scheduleUpdate();
+
 	return true;
 }
 
@@ -160,11 +166,9 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 	if (tagA == Constant::getPlayerTag() && tagB == Constant::getEdgeTag()) {
 		PlayerController::getInstance()->setOnAir(false);
 		PlayerController::getInstance()->setSecondJump(false);
-		log("OnAir: %d", PlayerController::getInstance()->getOnAir());
 	} else if (tagB == Constant::getPlayerTag() && tagA == Constant::getEdgeTag()) {
 		PlayerController::getInstance()->setOnAir(false);
 		PlayerController::getInstance()->setSecondJump(false);
-		log("OnAir: %d", PlayerController::getInstance()->getOnAir());
 	}
 
 	return true;
@@ -174,30 +178,45 @@ void GameScene::onContactSeparate(PhysicsContact& contact) {
 
 }
 
-void GameScene::ClickStop(CCObject* pSender)
+void GameScene::ClickStop(Object* pSender)
 {
-	CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
-	CCRenderTexture *renderTexture = CCRenderTexture::create(visibleSize.width, visibleSize.height);
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	RenderTexture *renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
 
 
 	renderTexture->begin();
 	this->visit();
 	renderTexture->end();
 
-	CCDirector::sharedDirector()->pushScene(GamePause::scene(renderTexture));
+	Director::getInstance()->pushScene(GamePause::scene(renderTexture));
 }
 
 void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
 	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
-		CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
-		CCRenderTexture *renderTexture = CCRenderTexture::create(visibleSize.width, visibleSize.height);
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		RenderTexture *renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
 		renderTexture->begin();
 		this->visit();
 		renderTexture->end();
-		CCDirector::sharedDirector()->pushScene(GamePause::scene(renderTexture));
+		Director::getInstance()->pushScene(GamePause::scene(renderTexture));
 	}
 }
 
 void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
 	
+}
+
+void GameScene::update(float f) {
+	if (isGameEnded == true) {
+		return;
+	}
+	if (MonsterController::getInstance()->getMonster()->getHp() <= 0) {
+		Size visibleSize = Director::getInstance()->getVisibleSize();
+		RenderTexture *renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
+		renderTexture->begin();
+		this->visit();
+		renderTexture->end();
+		Director::getInstance()->pushScene(GameController::scene(renderTexture));
+		isGameEnded = true;
+	}
 }

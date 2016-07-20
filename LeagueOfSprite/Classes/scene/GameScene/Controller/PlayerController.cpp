@@ -84,8 +84,8 @@ void PlayerController::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event
 		//player_->run(direction::down);
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_J) {
-		this->addChild(Weapon::newWeapon(player_->getPosition()));
-		player_->shoot();
+		//this->addChild(Weapon::newWeapon(player_->getPosition()));
+		//player_->shoot();
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_K) {
 		if (isReleasingThunder != true) {
@@ -110,8 +110,17 @@ void PlayerController::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event
 			releaseShield();
 		}
 	}
+	else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
+		totalTimeforPowerBar = 0.0;
+		player_->getPowerBar()->setVisible(true);
+		player_->setPowerBar(0.0);
+		player_->schedule(schedule_selector(PlayerController::updatePowerBar), 0.1f);
+		player_->shoot();
+	}
 
 }
+
+float PlayerController::totalTimeforPowerBar;
 
 void PlayerController::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
 	
@@ -128,6 +137,12 @@ void PlayerController::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* even
 		player_->stopRunning();
 		player_->stopActionByTag(actionDir::moveDown);
 	} else if (keyCode == EventKeyboard::KeyCode::KEY_J) {
+		
+	} else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
+		player_->getPowerBar()->setVisible(false);
+		player_->unschedule(schedule_selector(PlayerController::updatePowerBar));
+		float v = player_->getPowerBar()->getPercentage();
+		this->addChild(Weapon::newWeapon(player_->getPosition(), v));
 		player_->stopShooting();
 	}
 }
@@ -257,6 +272,8 @@ void PlayerController::initSkills() {
 	this->addChild(shieldMiddle, 2);
 	shield = Sprite::create("Model/Player/skills/222.png");
 	shield->setPosition(100+shield->getContentSize().width*+30, 520);
+	shield->setVisible(true);
+	shield->setOpacity(0);
 	this->addChild(shield, 2);
 	isShield = false;
 
@@ -264,7 +281,7 @@ void PlayerController::initSkills() {
 
 void PlayerController::initPlayer() {
 	player_ = Player::getInstance();
-	player_->setPosition(Point(100, 200));
+	player_->setPosition(Point(100, 150));
 	this->addChild(player_);
 	player_->setHP(100);
 	player_->setMP(100);
@@ -359,14 +376,27 @@ void PlayerController::resetStorm() {
 }
 
 void PlayerController::releaseShield() {
-	//shield->setVisible(false);
+	shield->setVisible(false);
 	player_->playShieldAnimate();
 	auto to = ProgressTo::create(5.0f, 100);
 	shieldTimer->runAction(Sequence::create(to, CallFunc::create(CC_CALLBACK_0(PlayerController::resetShield, this)), NULL));
 }
 
 void PlayerController::resetShield() {
-	//shield->setVisible(true);
+	shield->setVisible(true);
 	shieldTimer->setPercentage(0);
 	isShield = false;
+}
+
+void PlayerController::updatePowerBar(float t) {
+	totalTimeforPowerBar += t;
+	if (totalTimeforPowerBar > 3.0) {
+		player_->setPowerBar(0.0);
+		totalTimeforPowerBar = 0.0;
+		return;
+	}
+	else {
+		player_->setPowerBar(totalTimeforPowerBar / 3.0 * 100);
+		log("powerBar:   %f", player_->getPowerBar()->getPercentage());
+	}
 }

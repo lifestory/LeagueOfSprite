@@ -1,7 +1,7 @@
 #include "Weapon.h"
 
 
-Sprite* Weapon::newWeapon(Vec2 position)
+Sprite* Weapon::newWeapon(Vec2 position, float v)
 {
 	Sprite * new_weapon = Sprite::create("Model/stone.png");
 	auto weaponBody = PhysicsBody::createBox(new_weapon->getContentSize(), PhysicsMaterial(0.1f, 0.0f, 0.99f));
@@ -11,7 +11,8 @@ Sprite* Weapon::newWeapon(Vec2 position)
 	float progressPrecent = 100;
 	float arrowVelocityX = progressPrecent / 100 * 600 * sin(30 / 180 * 3.14);
 	float arrowVelocityY = progressPrecent / 100 * 600 * cos(30 / 180 * 3.14);
-	weaponBody->setVelocity(Vec2(300, 400));
+
+	weaponBody->setVelocity(Vec2(v/100*300, 400));
 
 	weaponBody->setCategoryBitmask(0x0000000F);
 	weaponBody->setCollisionBitmask(0x00000FF0);

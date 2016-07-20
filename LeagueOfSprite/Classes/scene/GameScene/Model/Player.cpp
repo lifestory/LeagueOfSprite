@@ -70,13 +70,26 @@ bool Player::init()
 	shieldAnimate->setVisible(false);
 	this->addChild(shieldAnimate, 1);
 
-	auto body = PhysicsBody::createBox(Size(stand->getContentSize().width*0.6,stand->getContentSize().height),  PhysicsMaterial(0.1f, 0.0f, 0.99f));
+	auto body = PhysicsBody::createBox(Size(stand->getContentSize().width*0.6,stand->getContentSize().height), PhysicsMaterial(0.99f, 0.0f, 0.99f));
 	body->setTag(Constant::getPlayerTag());
 	body->setRotationEnable(false);
+	body->setVelocityLimit(200);
+
 	this->setPhysicsBody(body);
 	this->getPhysicsBody()->setCategoryBitmask(0x0000000F);
 	this->getPhysicsBody()->setCollisionBitmask(0x000000FF);
 	this->getPhysicsBody()->setContactTestBitmask(0x0000000F);
+
+	// add power bar
+	powerBar = ProgressTimer::create(Sprite::create("GameScene/ProgressView/front.png"));
+	powerBar->setPosition(Vec2(stand->getPosition().x, stand->getPosition().y + stand->getContentSize().height/1.5));
+	powerBar->setType(ProgressTimer::Type::BAR);
+	powerBar->setMidpoint(Point(0, 0));
+	powerBar->setBarChangeRate(Point(1, 0));
+	powerBar->setScale(1.5f);
+	//powerBar->setPercentage(100);
+	powerBar->setVisible(false);
+	this->addChild(powerBar, 1);
 
 	return true;
 }
@@ -215,4 +228,24 @@ void Player::playShieldAnimate() {
 
 void Player::shieldAnimateEnded() {
 	shieldAnimate->setVisible(false);
+}
+
+ProgressTimer* Player::getPowerBar() {
+	return powerBar;
+}
+
+ProgressTimer* Player::powerBar = NULL;
+
+ProgressTimer* Player::getpowerBar() {
+	if (powerBar != NULL) {
+		return powerBar;
+	}
+}
+
+void Player::setPowerBar(float v) {
+	powerBar->setPercentage(v);
+}
+
+float Player::getPowerBarPercentage() {
+	return powerBar->getPercentage();
 }

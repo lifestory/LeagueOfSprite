@@ -56,6 +56,8 @@ public:
 	void releaseShield();
 	void resetShield();
 
+	void updatePowerBar(float t);
+
 private:
 	static PlayerController* playercontroller_;
 	Player* player_;
@@ -90,6 +92,9 @@ private:
 
 	// skill animation
 	Sprite *thunderAnimation;
+
+	// time to record power bar
+	static float totalTimeforPowerBar;
 };
 
 #endif // !_PLAYCONTROLLER_H_

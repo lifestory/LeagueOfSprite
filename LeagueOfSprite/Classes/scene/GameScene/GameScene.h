@@ -12,6 +12,7 @@
 #include "SoundManager.h"
 #include "GamePause.h"
 #include "ProgressView.h"
+#include "GameController.h"
 
 #include "SimpleAudioEngine.h"
 #include "ui/CocosGUI.h"
@@ -32,10 +33,11 @@ public:
 	virtual void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
 	
 	void ClickStop(CCObject* sender);
-	void updata(float t);
+
+	void update(float t);
 
 private:
-	bool isGameOver;
+	bool isGameEnded;
 	ProgressView* pro;
 };
 

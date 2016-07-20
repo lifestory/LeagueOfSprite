@@ -70,7 +70,7 @@ bool Monster::init() {
 	forwardAnimate->setVisible(false);
 	this->addChild(forwardAnimate, 1);*/
 
-	auto body = PhysicsBody::createBox(standAnimate->getContentSize()*0.8, PhysicsMaterial(0.1f, 0.0f, 0.99f));
+	auto body = PhysicsBody::createBox(standAnimate->getContentSize()*0.8, PhysicsMaterial(0.99f, 0.0f, 0.99f));
 	body->setRotationEnable(false);
 	//body->setDynamic(false);
 	body->setVelocityLimit(200);
