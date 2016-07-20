@@ -3,6 +3,12 @@
 
 #include "cocos2d.h"
 
+#include "SimpleAudioEngine.h"
+
+#include ".\public\soundManager\SoundManager.h"
+
+using namespace CocosDenshion;
+
 /**
 @brief    The cocos2d Application.
 
