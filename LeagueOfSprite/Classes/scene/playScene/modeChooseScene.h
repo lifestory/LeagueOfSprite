@@ -5,7 +5,7 @@
 #include "cocos2d.h"
 
 #include "HelloWorldScene.h"
-#include "LevelChooseScene.h"
+#include ".\scene\playScene\SingleMode\LevelChooseScene.h"
 
 USING_NS_CC;
 

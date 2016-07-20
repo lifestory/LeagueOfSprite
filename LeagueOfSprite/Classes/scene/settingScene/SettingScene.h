@@ -5,7 +5,7 @@
 #include "cocos2d.h"
 
 #include "HelloWorldScene.h"
-#include "SoundManager.h"
+#include ".\public\soundManager\SoundManager.h"
 
 USING_NS_CC;
 

@@ -4,8 +4,8 @@
 
 #include "cocos2d.h"
 
-#include "Weapon.h"
-#include "Constant.h"
+#include ".\scene\GameScene\Model\Monster.h"
+#include ".\public\Constant.h"
 
 USING_NS_CC;
 

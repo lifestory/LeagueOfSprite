@@ -1,6 +1,6 @@
 #pragma once
-#ifndef CONSTANT_H
-#define CONSTANT_H
+#ifndef _CONSTANT_H_
+#define _CONSTANT_H_
 
 class Constant {
 public:
@@ -20,4 +20,4 @@ private:
 	//player skill storm
 	static int stormTag;
 };
-#endif // !CONSTANT_H
+#endif // !_CONSTANT_H_

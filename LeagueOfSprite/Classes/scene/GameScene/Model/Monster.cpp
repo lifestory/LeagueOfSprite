@@ -1,5 +1,21 @@
 #include "Monster.h"
 
+enum direction
+{
+	left = 0,
+	right,
+	up,
+	down
+};
+
+enum actionDir
+{
+	moveLeft = 0,
+	moveRight,
+	moveUp,
+	moveDown
+};
+
 Monster* Monster::monster_ = NULL;
 
 Monster* Monster::getInstance() {
@@ -86,6 +102,19 @@ bool Monster::init() {
 
 	return true;
 }
+
+void Monster::stopRunning() {
+	runAnimate->setVisible(false);
+	stand->setVisible(true);
+}
+
+
+void Monster::jump()
+{
+	auto v = this->getPhysicsBody()->getVelocity();
+	this->getPhysicsBody()->setVelocity(Vec2(v.x, v.y + 200));
+}
+
 
 void Monster::beingHit() {
 	standAnimate->setVisible(false);

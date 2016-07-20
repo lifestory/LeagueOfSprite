@@ -5,7 +5,7 @@
 #include "cocos2d.h"
 #include "SimpleAudioEngine.h"
 
-#include "Constant.h"
+#include ".\public\Constant.h"
 
 using namespace CocosDenshion;
 USING_NS_CC;

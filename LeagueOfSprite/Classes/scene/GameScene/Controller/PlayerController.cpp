@@ -116,7 +116,7 @@ void PlayerController::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event
 void PlayerController::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
 	
 	if (keyCode == EventKeyboard::KeyCode::KEY_A) {
-		player_		->stopRunning();
+		player_->stopRunning();
 		player_->stopActionByTag(actionDir::moveLeft);
 	} else if (keyCode == EventKeyboard::KeyCode::KEY_D) {
 		player_->stopRunning();

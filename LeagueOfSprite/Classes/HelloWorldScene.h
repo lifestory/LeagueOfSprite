@@ -5,11 +5,11 @@
 
 #include "cocos2d.h"
 
-#include "SettingScene.h"
-#include "HelpScene.h"
-#include "AboutScene.h"
-#include "modeChooseScene.h"
-#include "SoundManager.h"
+#include ".\scene\settingScene\SettingScene.h"
+#include ".\scene\helpScene\HelpScene.h"
+#include ".\scene\aboutScene\AboutScene.h"
+#include ".\scene\playScene\modeChooseScene.h"
+#include ".\public\soundManager\SoundManager.h"
 #include "SimpleAudioEngine.h"
 
 using namespace CocosDenshion;

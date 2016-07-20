@@ -6,8 +6,8 @@
 #include "cocostudio\CocoStudio.h"
 
 #include ".\scene\GameScene\Model\Player.h"
-#include "Weapon.h"
-#include "ProgressView.h"
+#include ".\scene\GameScene\Model\Weapon.h"
+#include ".\scene\GameScene\Model\ProgressView.h"
 #include "WeaponBezier.h"
 #include "MonsterController.h"
 

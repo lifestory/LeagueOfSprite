@@ -4,8 +4,8 @@
 
 #include "cocos2d.h"
 
-#include "Monster.h"
-#include "ProgressView.h"
+#include ".\scene\GameScene\Model\Monster.h"
+#include ".\scene\GameScene\Model\ProgressView.h"
 
 USING_NS_CC;
 

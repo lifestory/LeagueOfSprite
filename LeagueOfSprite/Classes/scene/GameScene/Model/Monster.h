@@ -4,7 +4,7 @@
 
 #include "cocos2d.h";
 
-#include "Constant.h"
+#include ".\public\Constant.h"
 
 USING_NS_CC;
 
@@ -15,6 +15,12 @@ public:
 	CREATE_FUNC(Monster);
 
 	void releaseMonster();
+
+	void run(int direction);
+	void jump();
+	void stopRunning();
+	void shoot();
+	void stopShooting();
 
 	void restoreStand();
 	void beingHit();
@@ -33,5 +39,9 @@ private:
 	//basic information
 	int curhp;
 	int maxhp;
+
+	Sprite* stand;
+	Sprite* runAnimate;
+	Sprite* shootAnimate;
 };
 #endif

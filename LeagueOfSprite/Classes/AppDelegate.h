@@ -5,7 +5,7 @@
 
 #include "SimpleAudioEngine.h"
 
-#include "SoundManager.h"
+#include ".\public\soundManager\SoundManager.h"
 
 using namespace CocosDenshion;
 
