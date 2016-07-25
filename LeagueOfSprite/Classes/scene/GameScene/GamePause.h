@@ -15,7 +15,7 @@ public:
 	CREATE_FUNC(GamePause);
 
 
-	static cocos2d::Scene* scene(RenderTexture* sqr);
+	static Scene* scene(RenderTexture* sqr);
 
 	//continue
 	void ContinueGame(Object* pSender);

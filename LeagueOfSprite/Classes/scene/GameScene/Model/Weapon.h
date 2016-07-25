@@ -16,6 +16,9 @@ public:
 	//static Weapon* getInstance();
 	CREATE_FUNC(Weapon);
 	static Sprite* newWeapon(Vec2 position, float v);
+	static Sprite* newMonsterWeapon(Vec2 position, float v);
+
+	void updateWeaponAngle(float f, void *data, std::string str);
 	//void moveWeapon(float t);
 	
 private:

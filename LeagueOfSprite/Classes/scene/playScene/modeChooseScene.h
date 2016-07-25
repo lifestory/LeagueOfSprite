@@ -6,6 +6,7 @@
 
 #include "HelloWorldScene.h"
 #include "LevelChooseScene.h"
+#include "SoloScene.h"
 
 USING_NS_CC;
 

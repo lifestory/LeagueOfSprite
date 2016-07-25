@@ -40,6 +40,8 @@ bool MonsterController::init() {
 	this->addChild(avatar, 2);
 	this->addChild(bloodbar, 2);
 
+	this->schedule(schedule_selector(MonsterController::randomShoot), 1.5f);
+
 	return true;
 }
 
@@ -57,7 +59,7 @@ void MonsterController::updateBloodbarforDamaging(int damage) {
 	if (monsterHp >= damage) {
 		bloodbar->setCurrentProgress(monsterHp - damage);
 	} else {
-		bloodbar->setCurrentProgress(0);
+		bloodbar->setCurrentProgress(-1);
 	}
 }
 
@@ -69,3 +71,12 @@ void MonsterController::updateBlood(int value) {
 	}
 	
 }
+
+ProgressView* MonsterController::getBloodBar() {
+	return bloodbar;
+}
+
+void MonsterController::randomShoot(float dt) {
+	this->addChild(Weapon::newMonsterWeapon(monster->getPosition(), 100));
+	monster->attacking();
+} 

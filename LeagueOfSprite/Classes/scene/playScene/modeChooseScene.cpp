@@ -56,5 +56,8 @@ void ModeChooseScene::ClickSingle(Ref *sender) {
 }
 
 void ModeChooseScene::ClickSolo(Ref *sender) {
-
+	SimpleAudioEngine::getInstance()->playEffect("Sound/Click.wav");
+	auto scene = SoloScene::create();
+	auto trans = TransitionPageTurn::create(0.5f, scene, false);
+	Director::getInstance()->replaceScene(trans);
 }

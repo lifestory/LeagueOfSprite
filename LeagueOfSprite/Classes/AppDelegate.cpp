@@ -80,9 +80,13 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // run
     director->runWithScene(scene);
 
-	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/startSceneMusic.wma");
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/startMusic.mp3");
 	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/gameSceneMusic.mp3");
 	SimpleAudioEngine::getInstance()->preloadEffect("Sound/Click.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("Sound/playerSkills/thunder.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("Sound/playerSkills/shield.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("Sound/playerSkills/heal.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("Sound/playerSkills/storm.wav");
 
     return true;
 }

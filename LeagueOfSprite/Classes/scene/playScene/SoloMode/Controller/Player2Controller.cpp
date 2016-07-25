@@ -1,4 +1,4 @@
-#include "PlayerController.h"
+#include "Player2Controller.h"
 
 enum  direction
 {
@@ -16,22 +16,22 @@ enum actionDir
 	moveDown
 };
 
-PlayerController* PlayerController::playercontroller_ = NULL;
-//Player* PlayerController::player_ = NULL;
+Player2Controller* Player2Controller::player2controller_ = NULL;
+//Player* Player2Controller::player2_ = NULL;
 
 
-PlayerController* PlayerController::getInstance()
+Player2Controller* Player2Controller::getInstance()
 {
-	if (playercontroller_ == NULL)
+	if (player2controller_ == NULL)
 	{
-		playercontroller_ = PlayerController::create();
-		playercontroller_->setPosition(Vec2::ZERO);
-		playercontroller_->setAnchorPoint(Point::ZERO);
+		player2controller_ = Player2Controller::create();
+		player2controller_->setPosition(Vec2::ZERO);
+		player2controller_->setAnchorPoint(Point::ZERO);
 	}
-	return playercontroller_;
+	return player2controller_;
 }
 
-bool PlayerController::init()
+bool Player2Controller::init()
 {
 	if (!Layer::init())
 	{
@@ -47,47 +47,47 @@ bool PlayerController::init()
 
 	//add keyboard listener
 	auto listener = EventListenerKeyboard::create();
-	listener->onKeyPressed = CC_CALLBACK_2(PlayerController::onKeyPressed, this);
-	listener->onKeyReleased = CC_CALLBACK_2(PlayerController::onKeyReleased, this);
+	listener->onKeyPressed = CC_CALLBACK_2(Player2Controller::onKeyPressed, this);
+	listener->onKeyReleased = CC_CALLBACK_2(Player2Controller::onKeyReleased, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
 	return true;
 }
 
-Player* PlayerController::getPlayer()
+Player2* Player2Controller::getPlayer2()
 {
-	return player_;
+	return player2_;
 }
 
 
 //¼üÅÌ¿ØÖÆ
-void PlayerController::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
+void Player2Controller::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
 
-	if (keyCode == EventKeyboard::KeyCode::KEY_A) {
-		player_->run(direction::left);
+	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
+		player2_->run(direction::left);
 	}
-	else if (keyCode == EventKeyboard::KeyCode::KEY_D) {
-		player_->run(direction::right);
+	else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
+		player2_->run(direction::right);
 	}
-	else if (keyCode == EventKeyboard::KeyCode::KEY_W) {
+	else if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
 		if (getOnAir() == false) {
-			player_->jump();
+			player2_->jump();
 			setOnAir(true);
 		}
 		else if (getOnAir() == true && getSecondJump() == false) {
-			player_->jump();
+			player2_->jump();
 			setSecondJump(true);
 		}
 	}
-	else if (keyCode == EventKeyboard::KeyCode::KEY_S) {
-		//player_->run(direction::down);
+	else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
+		//player2_->run(direction::down);
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_J) {
-		//this->addChild(Weapon::newWeapon(player_->getPosition()));
-		//player_->shoot();
+		//this->addChild(Weapon::newWeapon(player2_->getPosition()));
+		//player2_->shoot();
 	}
-	else if (keyCode == EventKeyboard::KeyCode::KEY_K) {
+	else if (keyCode == EventKeyboard::KeyCode::KEY_1) {
 		if (isReleasingThunder != true) {
 			if (bluebar->getCurrentProgress() >= 40) {
 				isReleasingThunder = true;
@@ -97,19 +97,19 @@ void PlayerController::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event
 			}
 		}
 	}
-	else if (keyCode == EventKeyboard::KeyCode::KEY_L) {
+	else if (keyCode == EventKeyboard::KeyCode::KEY_2) {
 		if (isHealing != true) {
 			if (bluebar->getCurrentProgress() >= 10) {
 				isHealing = true;
 				releaseHeal();
-				player_->heal(player_->getHP()+10);
-				updateBloodbar(player_->getHP());
+				player2_->heal(player2_->getHP() + 10);
+				updateBloodbar(player2_->getHP());
 				updateBluebarforConsuming(10);
 				SimpleAudioEngine::getInstance()->playEffect("Sound/playerSkills/heal.wav");
 			}
 		}
 	}
-	else if (keyCode == EventKeyboard::KeyCode::KEY_N) {
+	else if (keyCode == EventKeyboard::KeyCode::KEY_3) {
 		if (isStorm != true) {
 			if (bluebar->getCurrentProgress() >= 20) {
 				releaseStorm();
@@ -118,7 +118,7 @@ void PlayerController::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event
 			}
 		}
 	}
-	else if (keyCode == EventKeyboard::KeyCode::KEY_M) {
+	else if (keyCode == EventKeyboard::KeyCode::KEY_4) {
 		if (isShield != true) {
 			if (bluebar->getCurrentProgress() >= 30) {
 				isShield = true;
@@ -128,71 +128,76 @@ void PlayerController::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event
 			}
 		}
 	}
-	else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
+	else if (keyCode == EventKeyboard::KeyCode::KEY_0) {
 		totalTimeforPowerBar = 0.0;
-		player_->setPowerBarVisiable(true);
-		player_->setPowerBar(0.0);
-		player_->schedule(schedule_selector(PlayerController::updatePowerBar), 0.1f);
-		player_->shoot();
+		player2_->setPowerBarVisiable(true);
+		player2_->setPowerBar(0.0);
+		player2_->schedule(schedule_selector(Player2Controller::updatePowerBar), 0.1f);
+		player2_->shoot();
 	}
 
 }
 
-float PlayerController::totalTimeforPowerBar;
+float Player2Controller::totalTimeforPowerBar;
 
-void PlayerController::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
-	
-	if (keyCode == EventKeyboard::KeyCode::KEY_A) {
-		player_		->stopRunning();
-		player_->stopActionByTag(actionDir::moveLeft);
-	} else if (keyCode == EventKeyboard::KeyCode::KEY_D) {
-		player_->stopRunning();
-		player_->stopActionByTag(actionDir::moveRight);
-	} else if (keyCode == EventKeyboard::KeyCode::KEY_W) {
-		player_->stopRunning();
-		player_->stopActionByTag(actionDir::moveUp);
-	} else if (keyCode == EventKeyboard::KeyCode::KEY_S) {
-		player_->stopRunning();
-		player_->stopActionByTag(actionDir::moveDown);
-	} else if (keyCode == EventKeyboard::KeyCode::KEY_J) {
-		
-	} else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
-		player_->setPowerBarVisiable(false);
-		player_->unschedule(schedule_selector(PlayerController::updatePowerBar));
-		float v = player_->getPowerBar()->getPercentage();
-		this->addChild(Weapon::newWeapon(player_->getPosition(), v));
-		player_->stopShooting();
+void Player2Controller::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
+
+	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
+		player2_->stopRunning();
+		player2_->stopActionByTag(actionDir::moveLeft);
+	}
+	else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
+		player2_->stopRunning();
+		player2_->stopActionByTag(actionDir::moveRight);
+	}
+	else if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
+		player2_->stopRunning();
+		player2_->stopActionByTag(actionDir::moveUp);
+	}
+	else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
+		player2_->stopRunning();
+		player2_->stopActionByTag(actionDir::moveDown);
+	}
+	else if (keyCode == EventKeyboard::KeyCode::KEY_J) {
+
+	}
+	else if (keyCode == EventKeyboard::KeyCode::KEY_0) {
+		player2_->setPowerBarVisiable(false);
+		player2_->unschedule(schedule_selector(Player2Controller::updatePowerBar));
+		float v = player2_->getPowerBar()->getPercentage();
+		this->addChild(Weapon::newMonsterWeapon(player2_->getPosition(), v));
+		player2_->stopShooting();
 	}
 }
 
-bool PlayerController::getOnAir() {
+bool Player2Controller::getOnAir() {
 	return onAir;
 }
 
-bool PlayerController::getSecondJump() {
+bool Player2Controller::getSecondJump() {
 	return secondJump;
 }
 
-void PlayerController::setOnAir(bool set) {
+void Player2Controller::setOnAir(bool set) {
 	onAir = set;
 }
 
-void PlayerController::setSecondJump(bool set) {
+void Player2Controller::setSecondJump(bool set) {
 	secondJump = set;
 }
 
-void PlayerController::releasePlayerController() {
-	if (playercontroller_ != NULL) {
-		//playercontroller_->getPlayer()->removeFromParentAndCleanup(true);
-		playercontroller_->getPlayer()->releasePlayer();
-		playercontroller_->removeAllChildrenWithCleanup(true);
-		playercontroller_->removeFromParentAndCleanup(true);
-		//playercontroller_->release();
-		playercontroller_ = NULL;
+void Player2Controller::releasePlayer2Controller() {
+	if (player2controller_ != NULL) {
+		//Player2Controller_->getPlayer()->removeFromParentAndCleanup(true);
+		player2controller_->getPlayer2()->releasePlayer2();
+		player2controller_->removeAllChildrenWithCleanup(true);
+		player2controller_->removeFromParentAndCleanup(true);
+		//Player2Controller_->release();
+		player2controller_ = NULL;
 	}
 }
 
-void PlayerController::releaseThunder() {
+void Player2Controller::releaseThunder() {
 	thunder->setVisible(false);
 	thunderAnimation->setVisible(true);
 	//thunderAnimation->runAction(thundingAction);
@@ -201,20 +206,20 @@ void PlayerController::releaseThunder() {
 
 	//auto action = CSLoader::createTimeline("Model/Player/skills/Node.csd");
 
-	thunderTimer->runAction(Sequence::create(to, CallFunc::create(CC_CALLBACK_0(PlayerController::resetThunder, this)), NULL));
+	thunderTimer->runAction(Sequence::create(to, CallFunc::create(CC_CALLBACK_0(Player2Controller::resetThunder, this)), NULL));
 }
 
-void PlayerController::resetThunder() {
+void Player2Controller::resetThunder() {
 	thunder->setVisible(true);
 	//thunderAnimation->setVisible(false);
 	thunderTimer->setPercentage(0);
 	isReleasingThunder = false;
 }
 
-void PlayerController::createBloodBar() {
+void Player2Controller::createBloodBar() {
 	//create bloodbar
 	bloodbar = new ProgressView();
-	bloodbar->setPosition(Point(200, 600));
+	bloodbar->setPosition(Point(820, 600));
 	bloodbar->setScale(3.0f);
 	bloodbar->setBackgroundTexture("GameScene/ProgressView/back.png");
 	bloodbar->setFrontgroundTexture("GameScene/ProgressView/front.png");
@@ -229,7 +234,7 @@ void PlayerController::createBloodBar() {
 
 	//create bluebar
 	bluebar = new ProgressView();
-	bluebar->setPosition(Point(200, 580));
+	bluebar->setPosition(Point(820, 580));
 	bluebar->setScale(3.0f);
 	bluebar->setBackgroundTexture("GameScene/ProgressView/back.png");
 	bluebar->setFrontgroundTexture("GameScene/ProgressView/blue.png");
@@ -238,58 +243,58 @@ void PlayerController::createBloodBar() {
 	this->addChild(bluebar, 2);
 }
 
-void PlayerController::initSkills() {
+void Player2Controller::initSkills() {
 	// thunder skill
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	thunderTimer = ProgressTimer::create(Sprite::create("Model/Player/skills/thunder.png"));
-	thunderTimer->setPosition(100, 520);
+	thunderTimer->setPosition(750, 520);
 	thunderTimer->setType(ProgressTimerType::RADIAL);
 	this->addChild(thunderTimer, 2);
 	thunderMiddle = Sprite::create("Model/Player/skills/thunder.png");
-	thunderMiddle->setPosition(100, 520);
+	thunderMiddle->setPosition(750, 520);
 	thunderMiddle->setOpacity(100);
 	this->addChild(thunderMiddle, 2);
 	thunder = Sprite::create("Model/Player/skills/thunder.png");
-	thunder->setPosition(100, 520);
+	thunder->setPosition(750, 520);
 	this->addChild(thunder, 2);
 	isReleasingThunder = false;
 	// heal skill
 	healTimer = ProgressTimer::create(Sprite::create("Model/Player/skills/heal.png"));
-	healTimer->setPosition(100+healTimer->getContentSize().width+10, 520);
+	healTimer->setPosition(750 + healTimer->getContentSize().width + 10, 520);
 	healTimer->setType(ProgressTimerType::RADIAL);
 	this->addChild(healTimer, 2);
 	healMiddle = Sprite::create("Model/Player/skills/heal.png");
-	healMiddle->setPosition(100+healMiddle->getContentSize().width+10, 520);
+	healMiddle->setPosition(750 + healMiddle->getContentSize().width + 10, 520);
 	healMiddle->setOpacity(100);
 	this->addChild(healMiddle, 2);
 	heal = Sprite::create("Model/Player/skills/heal.png");
-	heal->setPosition(100+heal->getContentSize().width+10, 520);
+	heal->setPosition(750 + heal->getContentSize().width + 10, 520);
 	this->addChild(heal, 2);
 	isHealing = false;
 	// storm skill
 	stormTimer = ProgressTimer::create(Sprite::create("Model/Player/skills/storm.png"));
-	stormTimer->setPosition(100+stormTimer->getContentSize().width*2+20, 520);
+	stormTimer->setPosition(750 + stormTimer->getContentSize().width * 2 + 20, 520);
 	stormTimer->setType(ProgressTimerType::RADIAL);
 	this->addChild(stormTimer, 2);
 	stormMiddle = Sprite::create("Model/Player/skills/storm.png");
-	stormMiddle->setPosition(100+stormMiddle->getContentSize().width*2+20, 520);
+	stormMiddle->setPosition(750 + stormMiddle->getContentSize().width * 2 + 20, 520);
 	stormMiddle->setOpacity(100);
 	this->addChild(stormMiddle, 2);
 	storm = Sprite::create("Model/Player/skills/storm.png");
-	storm->setPosition(100+storm->getContentSize().width*2+20, 520);
+	storm->setPosition(750 + storm->getContentSize().width * 2 + 20, 520);
 	this->addChild(storm, 2);
 	isStorm = false;
 	// shield skill
 	shieldTimer = ProgressTimer::create(Sprite::create("Model/Player/skills/222.png"));
-	shieldTimer->setPosition(100+shieldTimer->getContentSize().width*3+30, 520);
+	shieldTimer->setPosition(750 + shieldTimer->getContentSize().width * 3 + 30, 520);
 	shieldTimer->setType(ProgressTimerType::RADIAL);
 	this->addChild(shieldTimer, 2);
 	shieldMiddle = Sprite::create("Model/Player/skills/222.png");
-	shieldMiddle->setPosition(100+shieldMiddle->getContentSize().width*3+30, 520);
+	shieldMiddle->setPosition(750 + shieldMiddle->getContentSize().width * 3 + 30, 520);
 	shieldMiddle->setOpacity(100);
 	this->addChild(shieldMiddle, 2);
 	shield = Sprite::create("Model/Player/skills/222.png");
-	shield->setPosition(100+shield->getContentSize().width*+30, 520);
+	shield->setPosition(750 + shield->getContentSize().width*+30, 520);
 	shield->setVisible(true);
 	shield->setOpacity(0);
 	this->addChild(shield, 2);
@@ -297,19 +302,19 @@ void PlayerController::initSkills() {
 
 }
 
-void PlayerController::initPlayer() {
-	player_ = Player::getInstance();
-	player_->setPosition(Point(100, 150));
-	this->addChild(player_);
-	player_->setHP(100);
-	player_->setMP(100);
-	player_->setExp(0);
-	player_->setScore(0);
+void Player2Controller::initPlayer() {
+	player2_ = Player2::getInstance();
+	player2_->setPosition(Point(800, 150));
+	this->addChild(player2_);
+	player2_->setHP(100);
+	player2_->setMP(100);
+	player2_->setExp(0);
+	player2_->setScore(0);
 	onAir = false;
 	secondJump = false;
 }
 
-void PlayerController::initSkillsAnimation() {
+void Player2Controller::initSkillsAnimation() {
 	//thunder skill
 	thunderAnimation = Sprite::create("Model/Player/skills/thunderAnimation/0.png");
 	thunderAnimation->setVisible(false);
@@ -317,49 +322,49 @@ void PlayerController::initSkillsAnimation() {
 
 }
 
-Animate* PlayerController::getThunderAnimate() {
+Animate* Player2Controller::getThunderAnimate() {
 	auto thunding = Animation::create();
 	for (int i = 0; i < 8; i++) {
 		char filename[128] = { 0 };
 		sprintf(filename, "Model/Player/skills/thunderAnimation/%d.png", i);
 		thunding->addSpriteFrameWithFileName(filename);
 	}
-	thunding->setDelayPerUnit(2.0/8);
+	thunding->setDelayPerUnit(2.0 / 8);
 	auto thundingAction = Animate::create(thunding);
 	return thundingAction;
 }
 
-void PlayerController::playThunderAnimate() {
+void Player2Controller::playThunderAnimate() {
 	thunderAnimation->setVisible(true);
 	auto action = getThunderAnimate();
 	thunderAnimation->setPosition(MonsterController::getInstance()->getMonster()->getPosition());
-	thunderAnimation->runAction(Sequence::create(action, CallFunc::create(CC_CALLBACK_0(PlayerController::thunderAnimateEnded, this)), NULL));
+	thunderAnimation->runAction(Sequence::create(action, CallFunc::create(CC_CALLBACK_0(Player2Controller::thunderAnimateEnded, this)), NULL));
 }
 
-void PlayerController::thunderAnimateEnded() {
+void Player2Controller::thunderAnimateEnded() {
 	thunderAnimation->setVisible(false);
 }
 
-void PlayerController::releaseHeal() {
-	player_->playHealAnimate();
+void Player2Controller::releaseHeal() {
+	player2_->playHealAnimate();
 	heal->setVisible(false);
 	auto to = ProgressTo::create(5.0f, 100);
-	healTimer->runAction(Sequence::create(to, CallFunc::create(CC_CALLBACK_0(PlayerController::resetHeal, this)), NULL));
+	healTimer->runAction(Sequence::create(to, CallFunc::create(CC_CALLBACK_0(Player2Controller::resetHeal, this)), NULL));
 }
 
-void PlayerController::resetHeal() {
+void Player2Controller::resetHeal() {
 	heal->setVisible(true);
 	//thunderAnimation->setVisible(false);
 	healTimer->setPercentage(0);
 	isHealing = false;
 }
 
-void PlayerController::releaseStorm() {
+void Player2Controller::releaseStorm() {
 
 	isStorm = true;
 	storm->setVisible(false);
 	auto to = ProgressTo::create(5.0f, 100);
-	stormTimer->runAction(Sequence::create(to, CallFunc::create(CC_CALLBACK_0(PlayerController::resetStorm, this)), NULL));
+	stormTimer->runAction(Sequence::create(to, CallFunc::create(CC_CALLBACK_0(Player2Controller::resetStorm, this)), NULL));
 	//storm skill
 	auto stormAnimation = Animation::create();
 	for (int i = 5; i < 9; i++) {
@@ -371,7 +376,7 @@ void PlayerController::releaseStorm() {
 	auto stormAnimate = Animate::create(stormAnimation);
 
 	auto stormSprite = Sprite::create("Model/Player/skills/stormAnimation/5.png");
-	stormSprite->setPosition(player_->getPosition());
+	stormSprite->setPosition(player2_->getPosition());
 	auto body = PhysicsBody::createBox(Size(stormSprite->getContentSize().width*0.6, stormSprite->getContentSize().height*0.9));
 	body->setGravityEnable(false);
 	body->setRotationEnable(false);
@@ -387,72 +392,74 @@ void PlayerController::releaseStorm() {
 	stormSprite->runAction(RepeatForever::create(stormAnimate));
 }
 
-void PlayerController::resetStorm() {
+void Player2Controller::resetStorm() {
 	isStorm = false;
 	storm->setVisible(true);
 	stormTimer->setPercentage(0);
 }
 
-void PlayerController::releaseShield() {
+void Player2Controller::releaseShield() {
 	shield->setVisible(false);
-	player_->playShieldAnimate();
+	player2_->playShieldAnimate();
 	auto to = ProgressTo::create(5.0f, 100);
-	shieldTimer->runAction(Sequence::create(to, CallFunc::create(CC_CALLBACK_0(PlayerController::resetShield, this)), NULL));
+	shieldTimer->runAction(Sequence::create(to, CallFunc::create(CC_CALLBACK_0(Player2Controller::resetShield, this)), NULL));
 }
 
-void PlayerController::resetShield() {
+void Player2Controller::resetShield() {
 	shield->setVisible(true);
 	shieldTimer->setPercentage(0);
 	isShield = false;
 }
 
-bool PlayerController::getShield() {
+bool Player2Controller::getShield() {
 	return isShield;
 }
 
-void PlayerController::updatePowerBar(float t) {
+void Player2Controller::updatePowerBar(float t) {
 	totalTimeforPowerBar += t;
 	if (totalTimeforPowerBar > 3.0) {
-		player_->setPowerBar(0.0);
+		player2_->setPowerBar(0.0);
 		totalTimeforPowerBar = 0.0;
 		return;
 	}
 	else {
-		player_->setPowerBar(totalTimeforPowerBar / 3.0 * 100);
-		log("powerBar:   %f", player_->getPowerBar()->getPercentage());
+		player2_->setPowerBar(totalTimeforPowerBar / 3.0 * 100);
+		log("powerBar:   %f", player2_->getPowerBar()->getPercentage());
 	}
 }
 
 
-void PlayerController::updateBloodbar(int value) {
+void Player2Controller::updateBloodbar(int value) {
 	if (value > 0) {
 		bloodbar->setCurrentProgress(value);
-	} else {
+	}
+	else {
 		bloodbar->setCurrentProgress(-1);
 	}
 }
 
-void PlayerController::updateBluebarforConsuming(int value) {
+void Player2Controller::updateBluebarforConsuming(int value) {
 	if (bluebar->getCurrentProgress() > value) {
 		bluebar->setCurrentProgress(bluebar->getCurrentProgress() - value);
-	} else {
+	}
+	else {
 		bluebar->setCurrentProgress(-1);
 	}
 }
 
-ProgressView* PlayerController::getBloodBar() {
+ProgressView* Player2Controller::getBloodBar() {
 	return bloodbar;
 }
 
-void PlayerController::updateBlood(int value) {
+void Player2Controller::updateBlood(int value) {
 	if (value > 0 && value < 100) {
-		player_->setHP(value);
+		player2_->setHP(value);
 	}
 	else if (value >= 100) {
-		player_->setHP(100);
+		player2_->setHP(100);
 	}
 	else if (value <= 0) {
-		player_->setHP(0);
+		player2_->setHP(0);
 	}
 }
 

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _PLAYCONTROLLER_H_
-#define _PLAYCONTROLLER_H_
+#ifndef _PLAY2CONTROLLER_H_
+#define _PLAY2CONTROLLER_H_
 
 #include "cocos2d.h"
 #include "cocostudio\CocoStudio.h"
@@ -10,24 +10,25 @@
 #include "ProgressView.h"
 #include "WeaponBezier.h"
 #include "MonsterController.h"
+#include "Player2.h"
 
 USING_NS_CC;
 
-class PlayerController : public cocos2d::Layer
+class Player2Controller : public cocos2d::Layer
 {
 public:
-	static PlayerController* getInstance();
+	static Player2Controller* getInstance();
 	virtual bool init();
-	CREATE_FUNC(PlayerController);
-	
-	Player* getPlayer();
+	CREATE_FUNC(Player2Controller);
+
+	Player2* getPlayer2();
 
 	bool getOnAir();
 	bool getSecondJump();
 	void setOnAir(bool set);
 	void setSecondJump(bool set);
 
-	void releasePlayerController();
+	void releasePlayer2Controller();
 
 	//initial part
 	void initPlayer();
@@ -67,10 +68,10 @@ public:
 	//blue bar
 	void updateBluebarforConsuming(int value);
 	ProgressView* getBloodBar();
-	
+
 private:
-	static PlayerController* playercontroller_;
-	Player* player_;
+	static Player2Controller* player2controller_;
+	Player2* player2_;
 	ProgressView* bloodbar;
 	ProgressView* bluebar;
 	bool onAir;

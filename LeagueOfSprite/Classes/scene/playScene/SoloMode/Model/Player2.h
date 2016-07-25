@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _PLAYER_H_
-#define _PLAYER_H_
+#ifndef _Player2_H_
+#define _Player2_H_
 
 #include "cocos2d.h"
 
@@ -9,14 +9,14 @@
 
 USING_NS_CC;
 
-class  Player: public cocos2d::Sprite
+class  Player2 : public cocos2d::Sprite
 {
 public:
-	static Player* getInstance();
-	CREATE_FUNC(Player);
+	static Player2* getInstance();
+	CREATE_FUNC(Player2);
 	virtual bool init();
 
-	void releasePlayer();
+	void releasePlayer2();
 
 
 	//ÑªÁ¿
@@ -63,7 +63,7 @@ public:
 
 private:
 	//basic attribute
-	static Player* player_;
+	static Player2* player2_;
 	int hp_num;
 	int mp_num;
 	int score;
@@ -84,4 +84,4 @@ private:
 	Sprite *powerBarFrame;
 
 };
-#endif // !_PLAYER_H_
+#endif // !_Player2_H_

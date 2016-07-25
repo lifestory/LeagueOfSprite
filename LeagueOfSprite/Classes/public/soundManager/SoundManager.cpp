@@ -14,7 +14,7 @@ SoundManager* SoundManager::getInstance() {
 
 void SoundManager::startSceneinit() {
 	if (isMusicOn) {
-		SimpleAudioEngine::getInstance()->playBackgroundMusic("Sound/startSceneMusic.wma");
+		SimpleAudioEngine::getInstance()->playBackgroundMusic("Sound/startMusic.mp3");
 	}
 }
 

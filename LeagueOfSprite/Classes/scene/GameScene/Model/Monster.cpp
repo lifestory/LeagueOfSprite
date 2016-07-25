@@ -29,18 +29,18 @@ bool Monster::init() {
 	this->addChild(standAnimate, 1);
 
 	//attacking animation
-	/*auto attacking = Animation::create();
-	for (int i = 0; i < 1; i++) {
+	auto attacking = Animation::create();
+	for (int i = 0; i < 3; i++) {
 		char filename[128] = { 0 };
-		sprintf(filename, "Model/Monster/stand/attack_%d.png", i);
+		sprintf(filename, "Model/Monster/attack/attack_%d.png", i);
 		attacking->addSpriteFrameWithFileName(filename);
 	}
-	attacking->setDelayPerUnit(0.5f);
-	auto attackingAction = Animate::create(attacking);
-	attackAnimate = Sprite::create("Model/Monster/stand/attack_0.png");
+	attacking->setDelayPerUnit(0.15f);
+	attackingAction = Animate::create(attacking);
+	attackAnimate = Sprite::create("Model/Monster/attack/attack_0.png");
 	attackAnimate->runAction(RepeatForever::create(attackingAction));
 	attackAnimate->setVisible(false);
-	this->addChild(attackAnimate, 1);*/
+	this->addChild(attackAnimate, 1);
 
 	//injuring animation
 	auto injuring = Animation::create();
@@ -70,7 +70,7 @@ bool Monster::init() {
 	forwardAnimate->setVisible(false);
 	this->addChild(forwardAnimate, 1);*/
 
-	auto body = PhysicsBody::createBox(standAnimate->getContentSize()*0.8, PhysicsMaterial(0.99f, 0.0f, 0.99f));
+	auto body = PhysicsBody::createBox(standAnimate->getContentSize()*0.8, PhysicsMaterial(0.8f, 0.0f, 0.99f));
 	body->setRotationEnable(false);
 	//body->setDynamic(false);
 	body->setVelocityLimit(200);
@@ -80,9 +80,10 @@ bool Monster::init() {
 	this->getPhysicsBody()->setCollisionBitmask(0x0000000F);
 	this->getPhysicsBody()->setContactTestBitmask(0x0000000F);
 
-	//init status
+	//init status  basic attribute
 	maxhp = 100;
 	curhp = 100;
+	basicDamage = 10;
 
 	return true;
 }
@@ -96,9 +97,18 @@ void Monster::beingHit() {
 	injuredAnimate->runAction(sq);
 }
 
+void Monster::attacking() {
+	standAnimate->setVisible(false);
+	attackAnimate->setVisible(true);
+	//auto delay = DelayTime::create(0.2f);
+	auto sq = Sequence::create(attackingAction, CallFunc::create(CC_CALLBACK_0(Monster::restoreStand, this)), NULL);
+	attackAnimate->runAction(sq);
+}
+
 void Monster::restoreStand() {
 	standAnimate->setVisible(true);
 	injuredAnimate->setVisible(false);
+	attackAnimate->setVisible(false);
 }
 
 void Monster::releaseMonster() {
@@ -116,3 +126,12 @@ void Monster::setHp(int value) {
 int Monster::getHp() {
 	return curhp;
 }
+
+void Monster::setBasicDamage(int damage) {
+	basicDamage = damage;
+}
+
+int Monster::getBasicDamage() {
+	return basicDamage;
+}
+

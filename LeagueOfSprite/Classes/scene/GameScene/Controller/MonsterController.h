@@ -6,6 +6,7 @@
 
 #include "Monster.h"
 #include "ProgressView.h"
+#include "Weapon.h"
 
 USING_NS_CC;
 
@@ -19,11 +20,19 @@ public:
 	void releaseMonsterController();
 
 	void updateBloodbarforDamaging(int damage);
-	VOID updateBlood(int value);
+	void updateBlood(int value);
+	ProgressView* getBloodBar();
+
+	
+
+	//action
+	void randomShoot(float dt);
 
 private:
 	static MonsterController* monsterController;
 	Monster* monster;
 	ProgressView* bloodbar;
+
+	
 };
 #endif // !MONSTERCONTROLLER_H

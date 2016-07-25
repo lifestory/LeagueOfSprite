@@ -1,15 +1,15 @@
-#include "GameScene.h"
+#include "SoloScene.h"
 
-GameScene* GameScene::createScene()
+SoloScene* SoloScene::createScene()
 {
-	auto scene = new GameScene();
+	auto scene = new SoloScene();
 	//scene->initWithPhysics();
 	//scene->getPhysicsWorld()->setGravity(Vec2(0, -200));
 	scene->autorelease();
 	return scene;
 }
 
-bool GameScene::init() {
+bool SoloScene::init() {
 	if (!Scene::init())
 	{
 		return false;
@@ -43,8 +43,8 @@ bool GameScene::init() {
 
 	//add player
 	this->addChild(PlayerController::getInstance(), 1);
-	this->addChild(MonsterController::getInstance(), 1);
-	
+	this->addChild(Player2Controller::getInstance(), 1);
+
 
 	auto ground = Node::create();
 	auto body = PhysicsBody::createEdgeBox(Size(visibleSize.width, visibleSize.height*0.1), PhysicsMaterial(0.99f, 0.0f, 0.99f));
@@ -86,14 +86,14 @@ bool GameScene::init() {
 	this->addChild(rightwall, 1);
 
 	auto listener = EventListenerPhysicsContact::create();
-	listener->onContactBegin = CC_CALLBACK_1(GameScene::onContactBegin, this);
-	listener->onContactSeparate = CC_CALLBACK_1(GameScene::onContactSeparate, this);
+	listener->onContactBegin = CC_CALLBACK_1(SoloScene::onContactBegin, this);
+	listener->onContactSeparate = CC_CALLBACK_1(SoloScene::onContactSeparate, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 	//add keyboardEventListener
 	auto keylistener = EventListenerKeyboard::create();
-	keylistener->onKeyPressed = CC_CALLBACK_2(GameScene::onKeyPressed, this);
-	keylistener->onKeyReleased = CC_CALLBACK_2(GameScene::onKeyReleased, this);
+	keylistener->onKeyPressed = CC_CALLBACK_2(SoloScene::onKeyPressed, this);
+	keylistener->onKeyReleased = CC_CALLBACK_2(SoloScene::onKeyReleased, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keylistener, this);
 
 	scheduleUpdate();
@@ -101,7 +101,7 @@ bool GameScene::init() {
 	return true;
 }
 
-bool GameScene::onContactBegin(PhysicsContact& contact) {
+bool SoloScene::onContactBegin(PhysicsContact& contact) {
 	if (contact.getShapeB()->getBody() == NULL || contact.getShapeB()->getBody()->getNode() == NULL
 		|| contact.getShapeA()->getBody() == NULL || contact.getShapeA()->getBody()->getNode() == NULL) {
 		return false;
@@ -121,7 +121,7 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
 	}
 
-	//monster weapon hit ground
+	//player2 weapon hit ground
 	if (tagA == Constant::getEdgeTag() && tagB == Constant::getMonsterArrowTag()) {
 		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
 	}
@@ -129,7 +129,7 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
 	}
 
-	//monster weapon hit weapon
+	//player2 weapon hit weapon
 	if (tagA == Constant::getMonsterArrowTag() && tagB == Constant::getArrowTag()) {
 		auto explosion = ParticleExplosion::create();
 		auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
@@ -163,23 +163,22 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
 	}
 
-	//weapon hit monster
-	if (tagA == Constant::getMonsterTag() && tagB == Constant::getArrowTag()) {
+	//weapon hit player2
+	if (tagA == Constant::getPlayer2Tag() && tagB == Constant::getArrowTag()) {
 		contact.getShapeB()->getBody()->removeFromWorld();
 		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		int damage = PlayerController::getInstance()->getPlayer()->getBasicDamage();
-		MonsterController::getInstance()->getMonster()->beingHit();
-		MonsterController::getInstance()->updateBloodbarforDamaging(damage);
-		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - damage);
+		//MonsterController::getInstance()->getMonster()->beingHit();
+		Player2Controller::getInstance()->updateBlood(PlayerController::getInstance()->getPlayer()->getHP() - damage);
+		Player2Controller::getInstance()->updateBloodbar(PlayerController::getInstance()->getPlayer()->getHP());
 		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 	}
-	else if (tagB == Constant::getMonsterTag() && tagA == Constant::getArrowTag()) {
+	else if (tagB == Constant::getPlayer2Tag() && tagA == Constant::getArrowTag()) {
 		contact.getShapeA()->getBody()->removeFromWorld();
 		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		int damage = PlayerController::getInstance()->getPlayer()->getBasicDamage();
-		MonsterController::getInstance()->getMonster()->beingHit();
-		MonsterController::getInstance()->updateBloodbarforDamaging(damage);
-		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - damage);
+		Player2Controller::getInstance()->updateBlood(PlayerController::getInstance()->getPlayer()->getHP() - damage);
+		Player2Controller::getInstance()->updateBloodbar(PlayerController::getInstance()->getPlayer()->getHP());
 		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 	}
 
@@ -194,7 +193,8 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 			PlayerController::getInstance()->updateBlood(PlayerController::getInstance()->getPlayer()->getHP() - damage);
 			PlayerController::getInstance()->updateBloodbar(PlayerController::getInstance()->getPlayer()->getHP());
 			SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
-		} else {
+		}
+		else {
 			auto explosion = ParticleExplosion::create();
 			auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
 			auto posB = contact.getShapeB()->getBody()->getNode()->getPosition();
@@ -208,7 +208,7 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 			contact.getShapeB()->getBody()->removeFromWorld();
 			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		}
-		
+
 	}
 	else if (tagB == Constant::getPlayerTag() && tagA == Constant::getMonsterArrowTag()) {
 		if (PlayerController::getInstance()->getPlayer()->getShielding() == false) {
@@ -220,7 +220,8 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 			PlayerController::getInstance()->updateBlood(PlayerController::getInstance()->getPlayer()->getHP() - damage);
 			PlayerController::getInstance()->updateBloodbar(PlayerController::getInstance()->getPlayer()->getHP());
 			SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
-		} else {
+		}
+		else {
 			auto explosion = ParticleExplosion::create();
 			auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
 			auto posB = contact.getShapeB()->getBody()->getNode()->getPosition();
@@ -236,7 +237,7 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 		}
 	}
 
-	//storm hit monster
+	//storm hit right wall
 	if (tagA == Constant::getEdgeTag() && tagB == Constant::getStormTag()) {
 		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
 	}
@@ -244,19 +245,17 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
 	}
 
-	//storm hit right wall
+	//storm hit player2
 	if (tagA == Constant::getMonsterTag() && tagB == Constant::getStormTag()) {
 		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
-		MonsterController::getInstance()->getMonster()->beingHit();
-		MonsterController::getInstance()->updateBloodbarforDamaging(10);
-		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - 10);
+		Player2Controller::getInstance()->updateBlood(PlayerController::getInstance()->getPlayer()->getHP() - 10);
+		Player2Controller::getInstance()->updateBloodbar(PlayerController::getInstance()->getPlayer()->getHP());
 		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 	}
 	else if (tagB == Constant::getMonsterTag() && tagA == Constant::getStormTag()) {
 		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
-		MonsterController::getInstance()->getMonster()->beingHit();
-		MonsterController::getInstance()->updateBloodbarforDamaging(10);
-		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - 10);
+		Player2Controller::getInstance()->updateBlood(PlayerController::getInstance()->getPlayer()->getHP() - 10);
+		Player2Controller::getInstance()->updateBloodbar(PlayerController::getInstance()->getPlayer()->getHP());
 		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 	}
 
@@ -264,19 +263,30 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 	if (tagA == Constant::getPlayerTag() && tagB == Constant::getEdgeTag()) {
 		PlayerController::getInstance()->setOnAir(false);
 		PlayerController::getInstance()->setSecondJump(false);
-	} else if (tagB == Constant::getPlayerTag() && tagA == Constant::getEdgeTag()) {
+	}
+	else if (tagB == Constant::getPlayerTag() && tagA == Constant::getEdgeTag()) {
 		PlayerController::getInstance()->setOnAir(false);
 		PlayerController::getInstance()->setSecondJump(false);
+	}
+
+	//player2 land ground
+	if (tagA == Constant::getPlayer2Tag() && tagB == Constant::getEdgeTag()) {
+		Player2Controller::getInstance()->setOnAir(false);
+		Player2Controller::getInstance()->setSecondJump(false);
+	}
+	else if (tagB == Constant::getPlayer2Tag() && tagA == Constant::getEdgeTag()) {
+		Player2Controller::getInstance()->setOnAir(false);
+		Player2Controller::getInstance()->setSecondJump(false);
 	}
 
 	return true;
 }
 
-void GameScene::onContactSeparate(PhysicsContact& contact) {
+void SoloScene::onContactSeparate(PhysicsContact& contact) {
 
 }
 
-void GameScene::ClickStop(Object* pSender)
+void SoloScene::ClickStop(Object* pSender)
 {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	RenderTexture *renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
@@ -289,7 +299,7 @@ void GameScene::ClickStop(Object* pSender)
 	Director::getInstance()->pushScene(GamePause::scene(renderTexture));
 }
 
-void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
+void SoloScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
 	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
 		Size visibleSize = Director::getInstance()->getVisibleSize();
 		RenderTexture *renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
@@ -300,15 +310,15 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
 	}
 }
 
-void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
-	
+void SoloScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
+
 }
 
-void GameScene::update(float f) {
+void SoloScene::update(float f) {
 	if (isGameEnded == true) {
 		return;
 	}
-	if (MonsterController::getInstance()->getBloodBar()->getCurrentProgress() <= 0) {
+	if (Player2Controller::getInstance()->getBloodBar()->getCurrentProgress() <= 0) {
 		Size visibleSize = Director::getInstance()->getVisibleSize();
 		RenderTexture *renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
 		renderTexture->begin();

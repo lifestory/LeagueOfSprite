@@ -5,6 +5,7 @@
 #include "cocos2d.h";
 
 #include "Constant.h"
+#include "Weapon.h"
 
 USING_NS_CC;
 
@@ -16,11 +17,18 @@ public:
 
 	void releaseMonster();
 
+	//animation and action
 	void restoreStand();
 	void beingHit();
+	void attacking();
 
+	//basic attribute
+	//HP
 	void setHp(int value);
 	int getHp();
+	//basic damage
+	void setBasicDamage(int damage);
+	int getBasicDamage();
 
 private:
 	static Monster* monster_;
@@ -30,8 +38,11 @@ private:
 	Sprite* attackAnimate;
 	Animate* injuringAction;
 	Animate* standingAction;
-	//basic information
+	Animate* attackingAction;
+
+	//basic attribute
 	int curhp;
 	int maxhp;
+	int basicDamage;
 };
 #endif
