@@ -9,6 +9,7 @@
 
 #include "modeChooseScene.h"
 #include "GameScene.h"
+#include "GameManager.h"
 
 //USING_NS_CC_EXT;
 USING_NS_CC;

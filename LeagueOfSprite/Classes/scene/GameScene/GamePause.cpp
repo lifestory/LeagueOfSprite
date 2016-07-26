@@ -1,7 +1,7 @@
 #include "GamePause.h"
 
 
-CCScene* GamePause::scene(RenderTexture* sqr)
+Scene* GamePause::scene(RenderTexture* sqr)
 {
 	Scene* scene = Scene::create();
 	GamePause* layer = GamePause::create();
@@ -47,14 +47,47 @@ bool GamePause::init()
 	JumpMainmenuItem->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 80);
 
 
-	CCMenu* menu = CCMenu::create(ContinueGameItem, RestartGameItem, JumpMainmenuItem, NULL);
-	menu->setPosition(CCPoint::ZERO);
+	Menu* menu = Menu::create(ContinueGameItem, RestartGameItem, JumpMainmenuItem, NULL);
+	menu->setPosition(Point::ZERO);
 
 	this->addChild(menu, 2);
 
 	return true;
 }
 
+Scene* GamePause::soloScene(RenderTexture* sqr) {
+	auto scene = Scene::create();
+
+	//get visibleSize
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	//Continue
+	auto soloContinueGameItem = MenuItemImage::create("GameScene/Pause/ContinueClickBefore.png", "GameScene/Pause/ContinueClickAfter.png", scene, menu_selector(GamePause::soloContinueGame));
+	soloContinueGameItem->setPosition(visibleSize.width / 2, visibleSize.height / 2 + 80);
+
+	//Restart
+	auto soloRestartGameItem = MenuItemImage::create("GameScene/Pause/RestartClickBefore.png", "GameScene/Pause/RestartClickAfter.png", scene, menu_selector(GamePause::soloRestartGame));
+	soloRestartGameItem->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+
+	//JumptoMainmenu
+	auto soloJumpMainmenuItem = MenuItemImage::create("GameScene/Pause/MenuClickBefore.png", "GameScene/Pause/MenuClickAfter.png", scene, menu_selector(GamePause::soloJumpMainmenu));
+	soloJumpMainmenuItem->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 80);
+
+
+	Menu* menu = Menu::create(soloContinueGameItem, soloRestartGameItem, soloJumpMainmenuItem, NULL);
+	menu->setPosition(Point::ZERO);
+	scene->addChild(menu, 1);
+	
+
+	Sprite* backspr = Sprite::createWithTexture(sqr->getSprite()->getTexture());
+	backspr->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+	backspr->setFlippedY(true);
+	backspr->setColor(Color3B::GRAY);
+	scene->addChild(backspr);
+
+	return scene;
+}
 
 //continue
 void GamePause::ContinueGame(Object* pSender)
@@ -90,4 +123,24 @@ void GamePause::JumpMainmenu(Object* pSender)
 	//CCDirector::sharedDirector()->replaceScene(HelloWorld::scene());
 }
 
+void GamePause::soloContinueGame(Object* pSender) {
+	Director::getInstance()->popScene();
+}
 
+void GamePause::soloRestartGame(Object* pSender) {
+	Director::getInstance()->popScene();
+	PlayerController::getInstance()->releasePlayerController();
+	Player2Controller::getInstance()->releasePlayer2Controller();
+	auto scene = SoloScene::create();
+	auto trans = TransitionPageTurn::create(0.5f, scene, false);
+	Director::getInstance()->replaceScene(trans);
+}
+
+void GamePause::soloJumpMainmenu(Object* pSender) {
+	Director::getInstance()->popScene();
+	PlayerController::getInstance()->releasePlayerController();
+	Player2Controller::getInstance()->releasePlayer2Controller();
+	auto scene = HelloWorld::create();
+	auto trans = TransitionPageTurn::create(0.5f, scene, false);
+	Director::getInstance()->replaceScene(trans);
+}

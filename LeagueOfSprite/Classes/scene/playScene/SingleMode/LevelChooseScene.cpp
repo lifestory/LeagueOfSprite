@@ -62,16 +62,26 @@ bool LevelChooseScene::init() {
 
 void LevelChooseScene::ClickLevel1(Ref *sender) {
 	SimpleAudioEngine::getInstance()->playEffect("Sound/Click.wav");
+	GameManager::getInstance()->setGameLevel(1);
 	auto scene = GameScene::create();
 	Director::getInstance()->replaceScene(scene);
+	
 }
 
 void LevelChooseScene::ClickLevel2(Ref *sender) {
-
+	SimpleAudioEngine::getInstance()->playEffect("Sound/Click.wav");
+	GameManager::getInstance()->setGameLevel(2);
+	auto scene = GameScene::create();
+	Director::getInstance()->replaceScene(scene);
+	
 }
 
 void LevelChooseScene::ClickLevel3(Ref *sender) {
-
+	SimpleAudioEngine::getInstance()->playEffect("Sound/Click.wav");
+	GameManager::getInstance()->setGameLevel(3);
+	auto scene = GameScene::create();
+	Director::getInstance()->replaceScene(scene);
+	
 }
 
 void LevelChooseScene::ClickBack(Ref *sender) {

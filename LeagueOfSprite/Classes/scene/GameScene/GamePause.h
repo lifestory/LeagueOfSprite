@@ -5,6 +5,8 @@
 #include "cocos2d.h"
 #include "HelloWorldScene.h"
 #include ".\scene\playScene\modeChooseScene.h"
+#include "SoloScene.h"
+
 USING_NS_CC;
 
 class GamePause : public cocos2d::Layer
@@ -17,12 +19,20 @@ public:
 
 	static Scene* scene(RenderTexture* sqr);
 
+	static Scene* soloScene(RenderTexture* sqr);
+
 	//continue
 	void ContinueGame(Object* pSender);
 	//restart
 	void RestartGame(Object* pSender);
 	//jump to Mainmenu
 	void JumpMainmenu(Object* pSender);
+
+	//soloScene imageitem
+	void soloContinueGame(Object* pSender);
+	void soloRestartGame(Object* pSender);
+	void soloJumpMainmenu(Object* pSender);
+
 private:
 	MenuItemImage *ContinueGameItem;
 	MenuItemImage *RestartGameItem;

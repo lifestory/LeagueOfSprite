@@ -165,7 +165,7 @@ void Player2Controller::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* eve
 		player2_->setPowerBarVisiable(false);
 		player2_->unschedule(schedule_selector(Player2Controller::updatePowerBar));
 		float v = player2_->getPowerBar()->getPercentage();
-		this->addChild(Weapon::newMonsterWeapon(player2_->getPosition(), v));
+		this->addChild(Weapon::newMonsterWeapon(player2_->getPosition(), v, Constant::getPlayer2ArrowTag()));
 		player2_->stopShooting();
 	}
 }
@@ -337,7 +337,7 @@ Animate* Player2Controller::getThunderAnimate() {
 void Player2Controller::playThunderAnimate() {
 	thunderAnimation->setVisible(true);
 	auto action = getThunderAnimate();
-	thunderAnimation->setPosition(MonsterController::getInstance()->getMonster()->getPosition());
+	thunderAnimation->setPosition(PlayerController::getInstance()->getPlayer()->getPosition());
 	thunderAnimation->runAction(Sequence::create(action, CallFunc::create(CC_CALLBACK_0(Player2Controller::thunderAnimateEnded, this)), NULL));
 }
 
@@ -381,14 +381,14 @@ void Player2Controller::releaseStorm() {
 	body->setGravityEnable(false);
 	body->setRotationEnable(false);
 	body->setCategoryBitmask(0x00000F0F);
-	body->setCollisionBitmask(0x000000F0);
-	body->setContactTestBitmask(0x000000F0);
-	body->setTag(Constant::getStormTag());
+	body->setCollisionBitmask(0x0000F000);
+	body->setContactTestBitmask(0x0000F0F0);
+	body->setTag(Constant::getStorm2Tag());
 	stormSprite->setPhysicsBody(body);
 
 	this->addChild(stormSprite, 2);
 	//auto spawn = Spawn::createWithTwoActions(RepeatForever::create(MoveBy::create(1.0f, Vec2(100, 0))), RepeatForever::create(stormAnimate));
-	stormSprite->runAction(RepeatForever::create(MoveBy::create(1.0f, Vec2(250, 0))));
+	stormSprite->runAction(RepeatForever::create(MoveBy::create(1.0f, Vec2(-250, 0))));
 	stormSprite->runAction(RepeatForever::create(stormAnimate));
 }
 

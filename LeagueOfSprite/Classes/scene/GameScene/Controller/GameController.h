@@ -18,13 +18,19 @@ public:
 
 	static GameController* getInstance();
 
-	cocos2d::Scene* scene(RenderTexture* sqr, int stauts);
+	cocos2d::Scene* scene(RenderTexture* sqr, int stauts, int mode);
 	Layer* createWinLayer();
 	Layer* createLoseLayer();
+	Layer* createPlayerWinLayer();
+	Layer* createPlayer2WinLayer();
 
 	void clickAgain();
 	void clickNext();
 	void clickMenu();
+
+	void soloclickAgain();
+	void soloclickNext();
+	void soloclickMenu();
 
 	void setGameStatus(int status);
 	int getGameStatus();

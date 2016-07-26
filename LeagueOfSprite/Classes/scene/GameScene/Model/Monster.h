@@ -21,6 +21,8 @@ public:
 	void restoreStand();
 	void beingHit();
 	void attacking();
+	void run(int dir, float v);
+	void stopRunning();
 
 	//basic attribute
 	//HP

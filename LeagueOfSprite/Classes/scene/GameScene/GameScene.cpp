@@ -1,5 +1,7 @@
 #include "GameScene.h"
 
+
+
 GameScene* GameScene::createScene()
 {
 	auto scene = new GameScene();
@@ -29,17 +31,39 @@ bool GameScene::init() {
 
 	//add map
 	auto spbk = Sprite::create("GameScene/scene1.png");
-	//spbk->setPosition(Point::ZERO);
-	//spbk->setAnchorPoint(Point::ZERO);
 	spbk->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 	this->addChild(spbk);
 
-	//add pause menuitem
-	/*MenuItemImage* pPauseItem = MenuItemImage::create("GameScene/Pause/PauseClickBefore.png", "GameScene/Pause/PauseClickAfter.png", this, menu_selector(GameScene::ClickStop));
-	pPauseItem->setPosition(Vec2(visibleSize.width - pPauseItem->getContentSize().width / 2, visibleSize.height - pPauseItem->getContentSize().height / 2));
-	auto pMenu = Menu::create(pPauseItem, NULL);
-	pMenu->setPosition(0, 0);
-	this->addChild(pMenu, 1);*/
+	if (GameManager::getInstance()->getGameLevel() == 1) {
+		auto spbk = Sprite::create("GameScene/scene1.png");
+		spbk->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+		this->addChild(spbk);
+
+		auto listener = EventListenerPhysicsContact::create();
+		listener->onContactBegin = CC_CALLBACK_1(GameScene::onContactBegin, this);
+		listener->onContactSeparate = CC_CALLBACK_1(GameScene::onContactSeparate, this);
+		Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+	}
+	else if (GameManager::getInstance()->getGameLevel() == 2) {
+		auto spbk = Sprite::create("GameScene/scene2.png");
+		spbk->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+		this->addChild(spbk);
+
+		auto listener = EventListenerPhysicsContact::create();
+		listener->onContactBegin = CC_CALLBACK_1(GameScene::onContactBegin2, this);
+		listener->onContactSeparate = CC_CALLBACK_1(GameScene::onContactSeparate2, this);
+		Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+	}
+	else if (GameManager::getInstance()->getGameLevel() == 3) {
+		auto spbk = Sprite::create("GameScene/scene3.png");
+		spbk->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+		this->addChild(spbk);
+
+		auto listener = EventListenerPhysicsContact::create();
+		listener->onContactBegin = CC_CALLBACK_1(GameScene::onContactBegin3, this);
+		listener->onContactSeparate = CC_CALLBACK_1(GameScene::onContactSeparate3, this);
+		Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+	}
 
 	//add player
 	this->addChild(PlayerController::getInstance(), 1);
@@ -169,8 +193,8 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		int damage = PlayerController::getInstance()->getPlayer()->getBasicDamage();
 		MonsterController::getInstance()->getMonster()->beingHit();
-		MonsterController::getInstance()->updateBloodbarforDamaging(damage);
-		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - damage);
+		MonsterController::getInstance()->updateBloodbarforDamaging(damage, Constant::getMonsterTag());
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - damage, Constant::getMonsterTag());
 		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 	}
 	else if (tagB == Constant::getMonsterTag() && tagA == Constant::getArrowTag()) {
@@ -178,8 +202,8 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		int damage = PlayerController::getInstance()->getPlayer()->getBasicDamage();
 		MonsterController::getInstance()->getMonster()->beingHit();
-		MonsterController::getInstance()->updateBloodbarforDamaging(damage);
-		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - damage);
+		MonsterController::getInstance()->updateBloodbarforDamaging(damage, Constant::getMonsterTag());
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - damage, Constant::getMonsterTag());
 		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 	}
 
@@ -195,15 +219,28 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 			PlayerController::getInstance()->updateBloodbar(PlayerController::getInstance()->getPlayer()->getHP());
 			SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 		} else {
-			auto explosion = ParticleExplosion::create();
+			auto explosion = ParticleSystemQuad::create("Model/explosion/particle.plist");
+			//explosion->setLife(1.0);
+			//explosion->setLifeVar(0.5);
+			//explosion->setEndRadius(15);
+			explosion->setDuration(1.0);
+			//explosion->setEmissionRate(500);
 			auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
 			auto posB = contact.getShapeB()->getBody()->getNode()->getPosition();
+
 			explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+			explosion->setAutoRemoveOnFinish(true);
+			/*explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
 			explosion->setEmitterMode(kCCParticleModeRadius);
 			explosion->setEndRadius(15);
-			explosion->setDuration(0.1);
-			explosion->setLife(0.1);
-			explosion->setColor(Color3B::RED);
+			explosion->setDuration(1.0);
+			explosion->setLife(1.0);
+			explosion->setLifeVar(0.5);
+			explosion->setStartColor(Color4F(255, 0, 0, 1));
+			explosion->setStartColorVar(Color4F(0, 0, 0, 0));
+			explosion->setEndColor(Color4F(255, 0, 0, 1));
+			explosion->setEndColorVar(Color4F(0, 0, 0, 0));
+			explosion->setEmissionRate(500);*/
 			this->addChild(explosion);
 			contact.getShapeB()->getBody()->removeFromWorld();
 			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
@@ -221,15 +258,24 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 			PlayerController::getInstance()->updateBloodbar(PlayerController::getInstance()->getPlayer()->getHP());
 			SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 		} else {
-			auto explosion = ParticleExplosion::create();
+			//auto explosion = ParticleExplosion::create();
+			auto explosion = ParticleSystemQuad::create("Model/explosion/particle.plist");
+			//explosion->setLife(1.0);
+			//explosion->setLifeVar(0.5);
+			//explosion->setEndRadius(15);
+			explosion->setDuration(1.0);
+			//explosion->setEmissionRate(500);
 			auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
 			auto posB = contact.getShapeB()->getBody()->getNode()->getPosition();
+
 			explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+			explosion->setAutoRemoveOnFinish(true);
+			/*explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
 			explosion->setEmitterMode(kCCParticleModeRadius);
 			explosion->setEndRadius(15);
 			explosion->setDuration(0.1);
 			explosion->setLife(0.1);
-			explosion->setColor(Color3B::RED);
+			explosion->setColor(Color3B::RED);*/
 			this->addChild(explosion);
 			contact.getShapeA()->getBody()->removeFromWorld();
 			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
@@ -248,15 +294,15 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 	if (tagA == Constant::getMonsterTag() && tagB == Constant::getStormTag()) {
 		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		MonsterController::getInstance()->getMonster()->beingHit();
-		MonsterController::getInstance()->updateBloodbarforDamaging(10);
-		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - 10);
+		MonsterController::getInstance()->updateBloodbarforDamaging(10, Constant::getMonsterTag());
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - 10, Constant::getMonsterTag());
 		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 	}
 	else if (tagB == Constant::getMonsterTag() && tagA == Constant::getStormTag()) {
 		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
 		MonsterController::getInstance()->getMonster()->beingHit();
-		MonsterController::getInstance()->updateBloodbarforDamaging(10);
-		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - 10);
+		MonsterController::getInstance()->updateBloodbarforDamaging(10, Constant::getMonsterTag());
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster()->getHp() - 10, Constant::getMonsterTag());
 		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
 	}
 
@@ -273,6 +319,402 @@ bool GameScene::onContactBegin(PhysicsContact& contact) {
 }
 
 void GameScene::onContactSeparate(PhysicsContact& contact) {
+
+}
+
+bool GameScene::onContactBegin2(PhysicsContact& contact) {
+	if (contact.getShapeB()->getBody() == NULL || contact.getShapeB()->getBody()->getNode() == NULL
+		|| contact.getShapeA()->getBody() == NULL || contact.getShapeA()->getBody()->getNode() == NULL) {
+		return false;
+	}
+
+
+	int tagA = contact.getShapeA()->getBody()->getTag();
+	int tagB = contact.getShapeB()->getBody()->getTag();
+
+	//weapon hit ground
+	if (tagA == Constant::getEdgeTag() && tagB == Constant::getArrowTag()) {
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (tagB == Constant::getEdgeTag() && tagA == Constant::getArrowTag()) {
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+
+	//monster2 weapon hit ground
+	if (tagA == Constant::getEdgeTag() && tagB == Constant::getMonster2ArrowTag()) {
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (tagB == Constant::getEdgeTag() && tagA == Constant::getMonster2ArrowTag()) {
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+
+	//monster weapon hit weapon
+	if (tagA == Constant::getMonster2ArrowTag() && tagB == Constant::getArrowTag()) {
+		auto explosion = ParticleExplosion::create();
+		auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
+		auto posB = contact.getShapeB()->getBody()->getNode()->getPosition();
+
+		explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+		explosion->setEmitterMode(kCCParticleModeRadius);
+		explosion->setEndRadius(15);
+		explosion->setDuration(0.1);
+		explosion->setLife(0.1);
+		explosion->setColor(Color3B::RED);
+		this->addChild(explosion);
+
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (tagB == Constant::getMonster2ArrowTag() && tagA == Constant::getArrowTag()) {
+		auto explosion = ParticleExplosion::create();
+		auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
+		auto posB = contact.getShapeB()->getBody()->getNode()->getPosition();
+
+		explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+		explosion->setEmitterMode(kCCParticleModeRadius);
+		explosion->setEndRadius(15);
+		explosion->setDuration(0.1);
+		explosion->setLife(0.1);
+		explosion->setColor(Color3B::RED);
+		this->addChild(explosion);
+
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+
+	//weapon hit monster2
+	if (tagA == Constant::getMonster2Tag() && tagB == Constant::getArrowTag()) {
+		contact.getShapeB()->getBody()->removeFromWorld();
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		int damage = PlayerController::getInstance()->getPlayer()->getBasicDamage();
+		MonsterController::getInstance()->getMonster2()->beingHit();
+		MonsterController::getInstance()->updateBloodbarforDamaging(damage, Constant::getMonster2Tag());
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster2()->getHp() - damage, Constant::getMonster2Tag());
+		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+	}
+	else if (tagB == Constant::getMonster2Tag() && tagA == Constant::getArrowTag()) {
+		contact.getShapeA()->getBody()->removeFromWorld();
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		int damage = PlayerController::getInstance()->getPlayer()->getBasicDamage();
+		MonsterController::getInstance()->getMonster2()->beingHit();
+		MonsterController::getInstance()->updateBloodbarforDamaging(damage, Constant::getMonster2Tag());
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster2()->getHp() - damage, Constant::getMonster2Tag());
+		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+	}
+
+	//weapon hit player
+	if (tagA == Constant::getPlayerTag() && tagB == Constant::getMonster2ArrowTag()) {
+		if (PlayerController::getInstance()->getPlayer()->getShielding() == false) {
+			contact.getShapeB()->getBody()->removeFromWorld();
+			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+			int damage = MonsterController::getInstance()->getMonster2()->getBasicDamage();
+			//PlayerController::getInstance()->updateBloodbarforDamaging(damage);
+			log("damage:     %d", PlayerController::getInstance()->getPlayer()->getHP() - damage);
+			PlayerController::getInstance()->updateBlood(PlayerController::getInstance()->getPlayer()->getHP() - damage);
+			PlayerController::getInstance()->updateBloodbar(PlayerController::getInstance()->getPlayer()->getHP());
+			SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+		}
+		else {
+			auto explosion = ParticleSystemQuad::create("Model/explosion/particle.plist");
+			//explosion->setLife(1.0);
+			//explosion->setLifeVar(0.5);
+			//explosion->setEndRadius(15);
+			explosion->setDuration(1.0);
+			//explosion->setEmissionRate(500);
+			auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
+			auto posB = contact.getShapeB()->getBody()->getNode()->getPosition();
+
+			explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+			explosion->setAutoRemoveOnFinish(true);
+			/*explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+			explosion->setEmitterMode(kCCParticleModeRadius);
+			explosion->setEndRadius(15);
+			explosion->setDuration(1.0);
+			explosion->setLife(1.0);
+			explosion->setLifeVar(0.5);
+			explosion->setStartColor(Color4F(255, 0, 0, 1));
+			explosion->setStartColorVar(Color4F(0, 0, 0, 0));
+			explosion->setEndColor(Color4F(255, 0, 0, 1));
+			explosion->setEndColorVar(Color4F(0, 0, 0, 0));
+			explosion->setEmissionRate(500);*/
+			this->addChild(explosion);
+			contact.getShapeB()->getBody()->removeFromWorld();
+			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		}
+
+	}
+	else if (tagB == Constant::getPlayerTag() && tagA == Constant::getMonster2ArrowTag()) {
+		if (PlayerController::getInstance()->getPlayer()->getShielding() == false) {
+			contact.getShapeA()->getBody()->removeFromWorld();
+			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+			int damage = MonsterController::getInstance()->getMonster2()->getBasicDamage();
+			//PlayerController::getInstance()->updateBloodbarforDamaging(damage);
+			log("damage:     %d", PlayerController::getInstance()->getPlayer()->getHP() - damage);
+			PlayerController::getInstance()->updateBlood(PlayerController::getInstance()->getPlayer()->getHP() - damage);
+			PlayerController::getInstance()->updateBloodbar(PlayerController::getInstance()->getPlayer()->getHP());
+			SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+		}
+		else {
+			//auto explosion = ParticleExplosion::create();
+			auto explosion = ParticleSystemQuad::create("Model/explosion/particle.plist");
+			//explosion->setLife(1.0);
+			//explosion->setLifeVar(0.5);
+			//explosion->setEndRadius(15);
+			explosion->setDuration(1.0);
+			//explosion->setEmissionRate(500);
+			auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
+			auto posB = contact.getShapeB()->getBody()->getNode()->getPosition();
+
+			explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+			explosion->setAutoRemoveOnFinish(true);
+			/*explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+			explosion->setEmitterMode(kCCParticleModeRadius);
+			explosion->setEndRadius(15);
+			explosion->setDuration(0.1);
+			explosion->setLife(0.1);
+			explosion->setColor(Color3B::RED);*/
+			this->addChild(explosion);
+			contact.getShapeA()->getBody()->removeFromWorld();
+			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		}
+	}
+
+	//storm hit wall
+	if (tagA == Constant::getEdgeTag() && tagB == Constant::getStormTag()) {
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (tagB == Constant::getEdgeTag() && tagA == Constant::getStormTag()) {
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+
+	//storm hit monster2
+	if (tagA == Constant::getMonster2Tag() && tagB == Constant::getStormTag()) {
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		MonsterController::getInstance()->getMonster2()->beingHit();
+		MonsterController::getInstance()->updateBloodbarforDamaging(10, Constant::getMonster2Tag());
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster2()->getHp() - 10, Constant::getMonster2Tag());
+		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+	}
+	else if (tagB == Constant::getMonster2Tag() && tagA == Constant::getStormTag()) {
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		MonsterController::getInstance()->getMonster2()->beingHit();
+		MonsterController::getInstance()->updateBloodbarforDamaging(10, Constant::getMonster2Tag());
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster2()->getHp() - 10, Constant::getMonster2Tag());
+		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+	}
+
+	//player land ground
+	if (tagA == Constant::getPlayerTag() && tagB == Constant::getEdgeTag()) {
+		PlayerController::getInstance()->setOnAir(false);
+		PlayerController::getInstance()->setSecondJump(false);
+	}
+	else if (tagB == Constant::getPlayerTag() && tagA == Constant::getEdgeTag()) {
+		PlayerController::getInstance()->setOnAir(false);
+		PlayerController::getInstance()->setSecondJump(false);
+	}
+
+	return true;
+}
+
+void GameScene::onContactSeparate2(PhysicsContact& contact) {
+
+}
+
+bool GameScene::onContactBegin3(PhysicsContact& contact) {
+	if (contact.getShapeB()->getBody() == NULL || contact.getShapeB()->getBody()->getNode() == NULL
+		|| contact.getShapeA()->getBody() == NULL || contact.getShapeA()->getBody()->getNode() == NULL) {
+		return false;
+	}
+
+
+	int tagA = contact.getShapeA()->getBody()->getTag();
+	int tagB = contact.getShapeB()->getBody()->getTag();
+
+	//weapon hit ground
+	if (tagA == Constant::getEdgeTag() && tagB == Constant::getArrowTag()) {
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (tagB == Constant::getEdgeTag() && tagA == Constant::getArrowTag()) {
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+
+	//monster3 weapon hit ground
+	if (tagA == Constant::getEdgeTag() && tagB == Constant::getMonster3ArrowTag()) {
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (tagB == Constant::getEdgeTag() && tagA == Constant::getMonster3ArrowTag()) {
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+
+	//monster weapon hit weapon
+	if (tagA == Constant::getMonster3ArrowTag() && tagB == Constant::getArrowTag()) {
+		auto explosion = ParticleExplosion::create();
+		auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
+		auto posB = contact.getShapeB()->getBody()->getNode()->getPosition();
+
+		explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+		explosion->setEmitterMode(kCCParticleModeRadius);
+		explosion->setEndRadius(15);
+		explosion->setDuration(0.1);
+		explosion->setLife(0.1);
+		explosion->setColor(Color3B::RED);
+		this->addChild(explosion);
+
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (tagB == Constant::getMonster3ArrowTag() && tagA == Constant::getArrowTag()) {
+		auto explosion = ParticleExplosion::create();
+		auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
+		auto posB = contact.getShapeB()->getBody()->getNode()->getPosition();
+
+		explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+		explosion->setEmitterMode(kCCParticleModeRadius);
+		explosion->setEndRadius(15);
+		explosion->setDuration(0.1);
+		explosion->setLife(0.1);
+		explosion->setColor(Color3B::RED);
+		this->addChild(explosion);
+
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+
+	//weapon hit monster3
+	if (tagA == Constant::getMonster3Tag() && tagB == Constant::getArrowTag()) {
+		contact.getShapeB()->getBody()->removeFromWorld();
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		int damage = PlayerController::getInstance()->getPlayer()->getBasicDamage();
+		MonsterController::getInstance()->getMonster3()->beingHit();
+		MonsterController::getInstance()->updateBloodbarforDamaging(damage, Constant::getMonster3Tag());
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster3()->getHp() - damage, Constant::getMonster3Tag());
+		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+	}
+	else if (tagB == Constant::getMonster3Tag() && tagA == Constant::getArrowTag()) {
+		contact.getShapeA()->getBody()->removeFromWorld();
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		int damage = PlayerController::getInstance()->getPlayer()->getBasicDamage();
+		MonsterController::getInstance()->getMonster3()->beingHit();
+		MonsterController::getInstance()->updateBloodbarforDamaging(damage, Constant::getMonster3Tag());
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster3()->getHp() - damage, Constant::getMonster3Tag());
+		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+	}
+
+	//weapon hit player
+	if (tagA == Constant::getPlayerTag() && tagB == Constant::getMonster3ArrowTag()) {
+		if (PlayerController::getInstance()->getPlayer()->getShielding() == false) {
+			contact.getShapeB()->getBody()->removeFromWorld();
+			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+			int damage = MonsterController::getInstance()->getMonster3()->getBasicDamage();
+			//PlayerController::getInstance()->updateBloodbarforDamaging(damage);
+			log("damage:     %d", PlayerController::getInstance()->getPlayer()->getHP() - damage);
+			PlayerController::getInstance()->updateBlood(PlayerController::getInstance()->getPlayer()->getHP() - damage);
+			PlayerController::getInstance()->updateBloodbar(PlayerController::getInstance()->getPlayer()->getHP());
+			SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+		}
+		else {
+			auto explosion = ParticleSystemQuad::create("Model/explosion/particle.plist");
+			//explosion->setLife(1.0);
+			//explosion->setLifeVar(0.5);
+			//explosion->setEndRadius(15);
+			explosion->setDuration(1.0);
+			//explosion->setEmissionRate(500);
+			auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
+			auto posB = contact.getShapeB()->getBody()->getNode()->getPosition();
+
+			explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+			explosion->setAutoRemoveOnFinish(true);
+			/*explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+			explosion->setEmitterMode(kCCParticleModeRadius);
+			explosion->setEndRadius(15);
+			explosion->setDuration(1.0);
+			explosion->setLife(1.0);
+			explosion->setLifeVar(0.5);
+			explosion->setStartColor(Color4F(255, 0, 0, 1));
+			explosion->setStartColorVar(Color4F(0, 0, 0, 0));
+			explosion->setEndColor(Color4F(255, 0, 0, 1));
+			explosion->setEndColorVar(Color4F(0, 0, 0, 0));
+			explosion->setEmissionRate(500);*/
+			this->addChild(explosion);
+			contact.getShapeB()->getBody()->removeFromWorld();
+			contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		}
+
+	}
+	else if (tagB == Constant::getPlayerTag() && tagA == Constant::getMonster3ArrowTag()) {
+		if (PlayerController::getInstance()->getPlayer()->getShielding() == false) {
+			contact.getShapeA()->getBody()->removeFromWorld();
+			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+			int damage = MonsterController::getInstance()->getMonster3()->getBasicDamage();
+			//PlayerController::getInstance()->updateBloodbarforDamaging(damage);
+			log("damage:     %d", PlayerController::getInstance()->getPlayer()->getHP() - damage);
+			PlayerController::getInstance()->updateBlood(PlayerController::getInstance()->getPlayer()->getHP() - damage);
+			PlayerController::getInstance()->updateBloodbar(PlayerController::getInstance()->getPlayer()->getHP());
+			SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+		}
+		else {
+			//auto explosion = ParticleExplosion::create();
+			auto explosion = ParticleSystemQuad::create("Model/explosion/particle.plist");
+			//explosion->setLife(1.0);
+			//explosion->setLifeVar(0.5);
+			//explosion->setEndRadius(15);
+			explosion->setDuration(1.0);
+			//explosion->setEmissionRate(500);
+			auto posA = contact.getShapeA()->getBody()->getNode()->getPosition();
+			auto posB = contact.getShapeB()->getBody()->getNode()->getPosition();
+
+			explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+			explosion->setAutoRemoveOnFinish(true);
+			/*explosion->setPosition(Vec2((posA.x + posB.x) / 2, (posA.y + posB.y) / 2));
+			explosion->setEmitterMode(kCCParticleModeRadius);
+			explosion->setEndRadius(15);
+			explosion->setDuration(0.1);
+			explosion->setLife(0.1);
+			explosion->setColor(Color3B::RED);*/
+			this->addChild(explosion);
+			contact.getShapeA()->getBody()->removeFromWorld();
+			contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		}
+	}
+
+	//storm hit wall
+	if (tagA == Constant::getEdgeTag() && tagB == Constant::getStormTag()) {
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (tagB == Constant::getEdgeTag() && tagA == Constant::getStormTag()) {
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+	}
+
+	//storm hit monster3
+	if (tagA == Constant::getMonster3Tag() && tagB == Constant::getStormTag()) {
+		contact.getShapeB()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		MonsterController::getInstance()->getMonster3()->beingHit();
+		MonsterController::getInstance()->updateBloodbarforDamaging(10, Constant::getMonster3Tag());
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster3()->getHp() - 10, Constant::getMonster3Tag());
+		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+	}
+	else if (tagB == Constant::getMonster3Tag() && tagA == Constant::getStormTag()) {
+		contact.getShapeA()->getBody()->getNode()->removeFromParentAndCleanup(true);
+		MonsterController::getInstance()->getMonster3()->beingHit();
+		MonsterController::getInstance()->updateBloodbarforDamaging(10, Constant::getMonster3Tag());
+		MonsterController::getInstance()->updateBlood(MonsterController::getInstance()->getMonster3()->getHp() - 10, Constant::getMonster3Tag());
+		SimpleAudioEngine::getInstance()->playEffect("Sound/hit.wav");
+	}
+
+	//player land ground
+	if (tagA == Constant::getPlayerTag() && tagB == Constant::getEdgeTag()) {
+		PlayerController::getInstance()->setOnAir(false);
+		PlayerController::getInstance()->setSecondJump(false);
+	}
+	else if (tagB == Constant::getPlayerTag() && tagA == Constant::getEdgeTag()) {
+		PlayerController::getInstance()->setOnAir(false);
+		PlayerController::getInstance()->setSecondJump(false);
+	}
+
+	return true;
+}
+
+void GameScene::onContactSeparate3(PhysicsContact& contact) {
 
 }
 
@@ -314,7 +756,7 @@ void GameScene::update(float f) {
 		renderTexture->begin();
 		this->visit();
 		renderTexture->end();
-		Director::getInstance()->pushScene(GameController::getInstance()->scene(renderTexture, Constant::getPlayWin()));
+		Director::getInstance()->pushScene(GameController::getInstance()->scene(renderTexture, Constant::getPlayWin(), Constant::getSingleMode()));
 		isGameEnded = true;
 	}
 	else if (PlayerController::getInstance()->getBloodBar()->getCurrentProgress() <= 0) {
@@ -323,7 +765,7 @@ void GameScene::update(float f) {
 		renderTexture->begin();
 		this->visit();
 		renderTexture->end();
-		Director::getInstance()->pushScene(GameController::getInstance()->scene(renderTexture, Constant::getPlayLose()));
+		Director::getInstance()->pushScene(GameController::getInstance()->scene(renderTexture, Constant::getPlayLose(), Constant::getSingleMode()));
 		isGameEnded = true;
 	}
 }

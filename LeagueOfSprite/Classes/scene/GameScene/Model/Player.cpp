@@ -76,7 +76,7 @@ bool Player::init()
 	body->setVelocityLimit(200);
 
 	this->setPhysicsBody(body);
-	this->getPhysicsBody()->setCategoryBitmask(0x0000000F);
+	this->getPhysicsBody()->setCategoryBitmask(0x0000F00F);
 	this->getPhysicsBody()->setCollisionBitmask(0x00000FFF);
 	this->getPhysicsBody()->setContactTestBitmask(0x00000FFF);
 

@@ -1,5 +1,20 @@
 #include "Monster.h"
 
+enum  direction {
+	left = 0,
+	right,
+	up,
+	down
+};
+
+enum actionDir
+{
+	moveLeft = 0,
+	moveRight,
+	moveUp,
+	moveDown
+};
+
 Monster* Monster::monster_ = NULL;
 
 Monster* Monster::getInstance() {
@@ -57,8 +72,8 @@ bool Monster::init() {
 	this->addChild(injuredAnimate, 1);
 
 	//forwarding animation
-	/*auto forwarding = Animation::create();
-	for (int i = 0; i < 1; i++) {
+	auto forwarding = Animation::create();
+	for (int i = 0; i < 2; i++) {
 		char filename[128] = { 0 };
 		sprintf(filename, "Model/Monster/stand/stand_%d.png", i);
 		forwarding->addSpriteFrameWithFileName(filename);
@@ -68,7 +83,7 @@ bool Monster::init() {
 	forwardAnimate = Sprite::create("Model/Monster/forward/forward_0.png");
 	forwardAnimate->runAction(RepeatForever::create(forwardingAction));
 	forwardAnimate->setVisible(false);
-	this->addChild(forwardAnimate, 1);*/
+	this->addChild(forwardAnimate, 1);
 
 	auto body = PhysicsBody::createBox(standAnimate->getContentSize()*0.8, PhysicsMaterial(0.8f, 0.0f, 0.99f));
 	body->setRotationEnable(false);
@@ -124,7 +139,7 @@ void Monster::setHp(int value) {
 }
 
 int Monster::getHp() {
-	return curhp;
+ 	return curhp;
 }
 
 void Monster::setBasicDamage(int damage) {
@@ -135,3 +150,46 @@ int Monster::getBasicDamage() {
 	return basicDamage;
 }
 
+void Monster::run(int direc, float speed)
+{
+	//standAnimate->setVisible(false);
+	//forwardAnimate->setVisible(true);
+
+	if (direc == direction::left) {
+		if (monster_->getPositionX() <= 512 + 20)
+		{
+			//monster_->setPositionX(512);
+		}
+		else {
+			auto action = MoveBy::create(1, Vec2(-speed, 0));
+			action->setTag(actionDir::moveLeft);
+			monster_->runAction(action);
+		}
+	}
+	else if (direc == direction::right) {
+		if (monster_->getPositionX() >= 1024 - 20)
+		{
+			//monster_->setPositionX(1000);
+		}
+		else {
+			auto action = MoveBy::create(1, Vec2(speed, 0));
+			action->setTag(actionDir::moveRight);
+			monster_->runAction(action);
+		}
+	}
+	else if (direc == direction::up) {
+		auto action = MoveBy::create(0.5, Vec2(0, speed * 10));
+		action->setTag(actionDir::moveUp);
+		monster_->runAction(action);
+	}
+	else if (direc == direction::down) {
+		auto action = MoveBy::create(0.5, Vec2(0, -speed));
+		action->setTag(actionDir::moveDown);
+		monster_->runAction(action);
+	}
+}
+
+void Monster::stopRunning() {
+	forwardAnimate->setVisible(false);
+	standAnimate->setVisible(true);
+}

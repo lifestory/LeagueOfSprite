@@ -10,6 +10,7 @@
 #include "ProgressView.h"
 #include "WeaponBezier.h"
 #include "MonsterController.h"
+#include "PlayerController.h"
 #include "Player2.h"
 
 USING_NS_CC;

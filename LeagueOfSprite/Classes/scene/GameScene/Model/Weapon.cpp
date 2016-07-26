@@ -7,7 +7,7 @@ Sprite* Weapon::newWeapon(Vec2 position, float v)
 	
 	//Sprite * new_weapon = Sprite::create("Model/stone.png");
 	auto new_weapon = new Weapon();
-	new_weapon->initWithFile("Model/stone.png");
+	new_weapon->initWithFile("Model/Weapon/player_weapon.png");
 	new_weapon->autorelease();
 	auto weaponBody = PhysicsBody::createBox(new_weapon->getContentSize(), PhysicsMaterial(0.1f, 0.0f, 0.99f));
 	
@@ -29,6 +29,9 @@ Sprite* Weapon::newWeapon(Vec2 position, float v)
 
 	new_weapon->setPhysicsBody(weaponBody);
 	new_weapon->setPosition(position);
+
+	new_weapon->runAction(RepeatForever::create(RotateBy::create(0.5, 360)));
+
 	std::string name = "hello";
 
 	//auto s = Director::getInstance()->getScheduler();
@@ -47,8 +50,19 @@ void Weapon::updateWeaponAngle(float f, void* data, std::string s) {
 }
 
 
-Sprite* Weapon::newMonsterWeapon(Vec2 position, float v) {
-	Sprite * new_weapon = Sprite::create("Model/stone.png");
+Sprite* Weapon::newMonsterWeapon(Vec2 position, float v, int type) {
+	Sprite *new_weapon;
+	if (type == Constant::getMonsterArrowTag()) {
+		new_weapon = Sprite::create("Model/Weapon/monster_weapon.png");
+	} else if (type == Constant::getMonster2ArrowTag()) {
+		new_weapon = Sprite::create("Model/Weapon/monster2_weapon.png");
+	}
+	else if (type == Constant::getMonster3ArrowTag()) {
+		new_weapon = Sprite::create("Model/Weapon/monster3_weapon.png");
+	} else if (type == Constant::getPlayer2ArrowTag()) {
+		new_weapon = Sprite::create("Model/Weapon/player_weapon.png");
+	}
+	
 	auto weaponBody = PhysicsBody::createBox(new_weapon->getContentSize(), PhysicsMaterial(0.1f, 0.0f, 0.99f));
 
 
@@ -62,13 +76,15 @@ Sprite* Weapon::newMonsterWeapon(Vec2 position, float v) {
 
 
 	weaponBody->setCategoryBitmask(0x00000F00);
-	weaponBody->setCollisionBitmask(0x00000FFF);
+	weaponBody->setCollisionBitmask(0x000000FF);
 	weaponBody->setContactTestBitmask(0x0000000F);
 
-	weaponBody->setTag(Constant::getMonsterArrowTag());
+	weaponBody->setTag(type);
 
 	new_weapon->setPhysicsBody(weaponBody);
 	new_weapon->setPosition(position);
+
+	new_weapon->runAction(RepeatForever::create(RotateBy::create(0.5, 360)));
 	//std::string name = "hello";
 	//auto s = Director::getInstance()->getScheduler();
 	//s->schedule(CC_CALLBACK_1(Weapon::updateWeaponAngle, new_weapon, new_weapon, name), new_weapon, 0, CC_REPEAT_FOREVER, 0, false, "end");
