@@ -18,7 +18,7 @@ bool GameScene::init() {
 	}
 
 	//play background music
-	//SoundManager::getInstance()->gameSceneinit();
+	SoundManager::getInstance()->gameSceneinit();
 
 	this->initWithPhysics();
 	this->getPhysicsWorld()->setGravity(Vec2(0, -400));
@@ -30,14 +30,23 @@ bool GameScene::init() {
 	isGameEnded = false;
 
 	//add map
-	auto spbk = Sprite::create("GameScene/scene1.png");
-	spbk->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-	this->addChild(spbk);
 
 	if (GameManager::getInstance()->getGameLevel() == 1) {
 		auto spbk = Sprite::create("GameScene/scene1.png");
 		spbk->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 		this->addChild(spbk);
+
+		//add fence1
+		auto fence1 = Sprite::create("Model/fence/fence1.png");
+		fence1->setPosition(Vec2(visibleSize.width / 2, visibleSize.height*0.1 + fence1->getContentSize().height / 2));
+		auto fenceBody = PhysicsBody::createBox(fence1->getContentSize());
+		fenceBody->setGravityEnable(false);
+		fenceBody->setDynamic(false);
+		fenceBody->setCategoryBitmask(0xFFFFFF0F);
+		fenceBody->setCollisionBitmask(0xFFFFFFFF);
+		fenceBody->setContactTestBitmask(0x00000000);
+		fence1->setPhysicsBody(fenceBody);
+		this->addChild(fence1, 1);
 
 		auto listener = EventListenerPhysicsContact::create();
 		listener->onContactBegin = CC_CALLBACK_1(GameScene::onContactBegin, this);
@@ -49,6 +58,18 @@ bool GameScene::init() {
 		spbk->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 		this->addChild(spbk);
 
+		//add fence2
+		auto fence2 = Sprite::create("Model/fence/fence2.png");
+		fence2->setPosition(Vec2(visibleSize.width / 2, visibleSize.height*0.1 + fence2->getContentSize().height / 2));
+		auto fenceBody = PhysicsBody::createBox(fence2->getContentSize());
+		fenceBody->setGravityEnable(false);
+		fenceBody->setDynamic(false);
+		fenceBody->setCategoryBitmask(0xFFFFFF0F);
+		fenceBody->setCollisionBitmask(0xFFFFFFFF);
+		fenceBody->setContactTestBitmask(0x00000000);
+		fence2->setPhysicsBody(fenceBody);
+		this->addChild(fence2, 1);
+
 		auto listener = EventListenerPhysicsContact::create();
 		listener->onContactBegin = CC_CALLBACK_1(GameScene::onContactBegin2, this);
 		listener->onContactSeparate = CC_CALLBACK_1(GameScene::onContactSeparate2, this);
@@ -58,6 +79,18 @@ bool GameScene::init() {
 		auto spbk = Sprite::create("GameScene/scene3.png");
 		spbk->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 		this->addChild(spbk);
+
+		//add fence3
+		auto fence3 = Sprite::create("Model/fence/fence3.png");
+		fence3->setPosition(Vec2(visibleSize.width / 2, visibleSize.height*0.1+fence3->getContentSize().height/2));
+		auto fenceBody = PhysicsBody::createBox(fence3->getContentSize());
+		fenceBody->setGravityEnable(false);
+		fenceBody->setDynamic(false);
+		fenceBody->setCategoryBitmask(0xFFFFFF0F);
+		fenceBody->setCollisionBitmask(0xFFFFFFFF);
+		fenceBody->setContactTestBitmask(0x00000000);
+		fence3->setPhysicsBody(fenceBody);
+		this->addChild(fence3, 1);
 
 		auto listener = EventListenerPhysicsContact::create();
 		listener->onContactBegin = CC_CALLBACK_1(GameScene::onContactBegin3, this);
@@ -109,10 +142,6 @@ bool GameScene::init() {
 
 	this->addChild(rightwall, 1);
 
-	auto listener = EventListenerPhysicsContact::create();
-	listener->onContactBegin = CC_CALLBACK_1(GameScene::onContactBegin, this);
-	listener->onContactSeparate = CC_CALLBACK_1(GameScene::onContactSeparate, this);
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 	//add keyboardEventListener
 	auto keylistener = EventListenerKeyboard::create();

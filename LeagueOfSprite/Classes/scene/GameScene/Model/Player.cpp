@@ -98,7 +98,7 @@ bool Player::init()
 	//HP
 	hp_num = 100;
 	//basic damage
-	basicDamage = 10;
+	basicDamage = 40;
 	shielding = false;
 
 	return true;

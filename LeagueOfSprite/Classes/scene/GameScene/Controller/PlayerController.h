@@ -68,6 +68,9 @@ public:
 	void updateBluebarforConsuming(int value);
 	ProgressView* getBloodBar();
 	
+	//controll weapon shooting speed
+	void weaponShootingSpeedController(float dt);
+
 private:
 	static PlayerController* playercontroller_;
 	Player* player_;
@@ -75,6 +78,8 @@ private:
 	ProgressView* bluebar;
 	bool onAir;
 	bool secondJump;
+	bool canShoot;
+	bool keyPressed;
 
 	// skill set --thunder
 	ProgressTimer *thunderTimer;

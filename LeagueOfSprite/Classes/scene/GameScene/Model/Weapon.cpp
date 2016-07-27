@@ -18,7 +18,7 @@ Sprite* Weapon::newWeapon(Vec2 position, float v)
 	float arrowVelocityY = progressPrecent / 100 * 600 * cos(30 / 180 * 3.14);
 
 
-	weaponBody->setVelocity(Vec2(v / 100 * 600, 400));
+	weaponBody->setVelocity(Vec2(v / 100 * 550, 400));
 	
 
 	weaponBody->setCategoryBitmask(0x0000000F);
@@ -60,7 +60,7 @@ Sprite* Weapon::newMonsterWeapon(Vec2 position, float v, int type) {
 	else if (type == Constant::getMonster3ArrowTag()) {
 		new_weapon = Sprite::create("Model/Weapon/monster3_weapon.png");
 	} else if (type == Constant::getPlayer2ArrowTag()) {
-		new_weapon = Sprite::create("Model/Weapon/player_weapon.png");
+		new_weapon = Sprite::create("Model/Weapon/player2_weapon.png");
 	}
 	
 	auto weaponBody = PhysicsBody::createBox(new_weapon->getContentSize(), PhysicsMaterial(0.1f, 0.0f, 0.99f));
@@ -71,8 +71,12 @@ Sprite* Weapon::newMonsterWeapon(Vec2 position, float v, int type) {
 	float arrowVelocityX = progressPrecent / 100 * 600 * sin(30 / 180 * 3.14);
 	float arrowVelocityY = progressPrecent / 100 * 600 * cos(30 / 180 * 3.14);
 
+	if (type == Constant::getPlayer2ArrowTag()) {
+		weaponBody->setVelocity(Vec2(-v / 100 * 550, 450));
+	} else {
+		weaponBody->setVelocity(Vec2(-v / 100 * 300, 400));
+	}
 
-	weaponBody->setVelocity(Vec2(-v / 100 * 300, 400));
 
 
 	weaponBody->setCategoryBitmask(0x00000F00);
@@ -84,7 +88,10 @@ Sprite* Weapon::newMonsterWeapon(Vec2 position, float v, int type) {
 	new_weapon->setPhysicsBody(weaponBody);
 	new_weapon->setPosition(position);
 
-	new_weapon->runAction(RepeatForever::create(RotateBy::create(0.5, 360)));
+	if (type != Constant::getPlayer2ArrowTag()) {
+		new_weapon->runAction(RepeatForever::create(RotateBy::create(0.5, 360)));
+	}
+	
 	//std::string name = "hello";
 	//auto s = Director::getInstance()->getScheduler();
 	//s->schedule(CC_CALLBACK_1(Weapon::updateWeaponAngle, new_weapon, new_weapon, name), new_weapon, 0, CC_REPEAT_FOREVER, 0, false, "end");

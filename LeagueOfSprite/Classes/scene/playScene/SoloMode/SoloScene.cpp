@@ -16,7 +16,7 @@ bool SoloScene::init() {
 	}
 
 	//play background music
-	//SoundManager::getInstance()->gameSceneinit();
+	SoundManager::getInstance()->gameSceneinit();
 
 	this->initWithPhysics();
 	this->getPhysicsWorld()->setGravity(Vec2(0, -400));
@@ -45,6 +45,17 @@ bool SoloScene::init() {
 	this->addChild(PlayerController::getInstance(), 1);
 	this->addChild(Player2Controller::getInstance(), 1);
 
+	//add fence
+	auto fence1 = Sprite::create("Model/fence/fence1.png");
+	fence1->setPosition(Vec2(visibleSize.width / 2, visibleSize.height*0.1 + fence1->getContentSize().height / 2));
+	auto fenceBody = PhysicsBody::createBox(fence1->getContentSize());
+	fenceBody->setGravityEnable(false);
+	fenceBody->setDynamic(false);
+	fenceBody->setCategoryBitmask(0xFFFFFF0F);
+	fenceBody->setCollisionBitmask(0xFFFFFFFF);
+	fenceBody->setContactTestBitmask(0x00000000);
+	fence1->setPhysicsBody(fenceBody);
+	this->addChild(fence1, 1);
 
 	auto ground = Node::create();
 	auto body = PhysicsBody::createEdgeBox(Size(visibleSize.width, visibleSize.height*0.1), PhysicsMaterial(0.99f, 0.0f, 0.99f));

@@ -51,6 +51,8 @@ bool PlayerController::init()
 	listener->onKeyReleased = CC_CALLBACK_2(PlayerController::onKeyReleased, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
+	this->schedule(schedule_selector(PlayerController::weaponShootingSpeedController), 1.0f);
+
 	return true;
 }
 
@@ -129,11 +131,15 @@ void PlayerController::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event
 		}
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
-		totalTimeforPowerBar = 0.0;
-		player_->setPowerBarVisiable(true);
-		player_->setPowerBar(0.0);
-		player_->schedule(schedule_selector(PlayerController::updatePowerBar), 0.1f);
-		player_->shoot();
+		if (canShoot == true) {
+			totalTimeforPowerBar = 0.0;
+			player_->setPowerBarVisiable(true);
+			player_->setPowerBar(0.0);
+			player_->schedule(schedule_selector(PlayerController::updatePowerBar), 0.1f);
+			player_->shoot();
+			keyPressed = true;
+		}
+		
 	}
 
 }
@@ -157,11 +163,16 @@ void PlayerController::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* even
 	} else if (keyCode == EventKeyboard::KeyCode::KEY_J) {
 		
 	} else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
-		player_->setPowerBarVisiable(false);
-		player_->unschedule(schedule_selector(PlayerController::updatePowerBar));
-		float v = player_->getPowerBar()->getPercentage();
-		this->addChild(Weapon::newWeapon(player_->getPosition(), v));
-		player_->stopShooting();
+		if (canShoot == true && keyPressed == true) {
+			player_->setPowerBarVisiable(false);
+			player_->unschedule(schedule_selector(PlayerController::updatePowerBar));
+			float v = player_->getPowerBar()->getPercentage();
+			this->addChild(Weapon::newWeapon(player_->getPosition(), v));
+			player_->stopShooting();
+			canShoot = false;
+			keyPressed = false;
+		}
+		
 	}
 }
 
@@ -307,6 +318,8 @@ void PlayerController::initPlayer() {
 	player_->setScore(0);
 	onAir = false;
 	secondJump = false;
+	canShoot = true;
+	keyPressed = false;
 }
 
 void PlayerController::initSkillsAnimation() {
@@ -412,13 +425,13 @@ bool PlayerController::getShield() {
 
 void PlayerController::updatePowerBar(float t) {
 	totalTimeforPowerBar += t;
-	if (totalTimeforPowerBar > 3.0) {
+	if (totalTimeforPowerBar > 1.5) {
 		player_->setPowerBar(0.0);
 		totalTimeforPowerBar = 0.0;
 		return;
 	}
 	else {
-		player_->setPowerBar(totalTimeforPowerBar / 3.0 * 100);
+		player_->setPowerBar(totalTimeforPowerBar / 1.5 * 100);
 		log("powerBar:   %f", player_->getPowerBar()->getPercentage());
 	}
 }
@@ -456,3 +469,6 @@ void PlayerController::updateBlood(int value) {
 	}
 }
 
+void PlayerController::weaponShootingSpeedController(float dt) {
+	canShoot = true;
+}

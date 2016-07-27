@@ -17,9 +17,9 @@ bool AboutScene::init() {
 	bk->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	this->addChild(bk);
 
-	/*auto manual = Sprite::create("AboutScene/gameManual.png");
+	auto manual = Sprite::create("AboutScene/about.png");
 	manual->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-	this->addChild(manual, 1);*/
+	this->addChild(manual, 1);
 
 	back = MenuItemImage::create("AboutScene/backClickBefore.png", "AboutScene/backClickAfter.png", CC_CALLBACK_1(AboutScene::ClickBack, this));
 	back->setPosition(visibleSize.width / 2, visibleSize.height*0.1);

@@ -50,6 +50,8 @@ public:
 	Animate* getShieldAnimate();
 	void playShieldAnimate();
 	void shieldAnimateEnded();
+	void beingHit();
+	void restoreStand();
 
 	//shielding
 	bool getShielding();
@@ -76,6 +78,7 @@ private:
 	Sprite* shootAnimate;
 	Sprite *healAnimate;
 	Sprite *shieldAnimate;
+	Sprite *injuredAnimate;
 	bool shielding;
 
 	//power bar

@@ -28,6 +28,7 @@ public:
 	bool getSecondJump();
 	void setOnAir(bool set);
 	void setSecondJump(bool set);
+	void weaponShootingSpeedController2(float dt);
 
 	void releasePlayer2Controller();
 
@@ -77,6 +78,8 @@ private:
 	ProgressView* bluebar;
 	bool onAir;
 	bool secondJump;
+	bool canShoot;
+	bool keyPressed;
 
 	// skill set --thunder
 	ProgressTimer *thunderTimer;

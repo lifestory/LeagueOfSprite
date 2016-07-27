@@ -70,7 +70,7 @@ bool HelloWorld::init()
     this->addChild(sprite, 0);*/
 
 	//play background music
-	//SoundManager::getInstance()->startSceneinit();
+	SoundManager::getInstance()->startSceneinit();
 
 	auto background = Sprite::create("StartScene/startScene.png");
 	background->setPosition(visibleSize.width / 2, visibleSize.height / 2);

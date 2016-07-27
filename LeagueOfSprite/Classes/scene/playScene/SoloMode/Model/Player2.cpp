@@ -38,11 +38,11 @@ bool Player2::init()
 	}
 	//Sprite* Player2_ = Sprite::create("Model\Player2.png");
 	//this->addChild(Player2_);
-	stand = Sprite::create("Model/Player/Player.png");
+	stand = Sprite::create("Model/Player2/player2_stand.png");
 	this->addChild(stand, 1);
 
 	//running animation
-	auto running = Animation::create();
+	/*auto running = Animation::create();
 	for (int i = 0; i < 1; i++) {
 		char filename[128] = { 0 };
 		sprintf(filename, "Model/Player/run/run_%d.png", i);
@@ -53,12 +53,17 @@ bool Player2::init()
 	runAnimate = Sprite::create("Model/Player/run/run_0.png");
 	runAnimate->runAction(RepeatForever::create(runningAction));
 	this->addChild(runAnimate, 1);
-	runAnimate->setVisible(false);
+	runAnimate->setVisible(false);*/
 
 	//shoot animation
-	shootAnimate = Sprite::create("Model/Player/shoot/shoot.png");
+	shootAnimate = Sprite::create("Model/Player2/player2_attack.png");
 	shootAnimate->setVisible(false);
 	this->addChild(shootAnimate, 1);
+
+	//injured animation
+	injuredAnimate = Sprite::create("Model/Player2/player2_injured.png");
+	injuredAnimate->setVisible(false);
+	this->addChild(injuredAnimate, 1);
 
 	//heal animate
 	healAnimate = Sprite::create("Model/Player/skills/healAnimation/0.png");
@@ -98,7 +103,7 @@ bool Player2::init()
 	//HP
 	hp_num = 100;
 	//basic damage
-	basicDamage = 10;
+	basicDamage = 40;
 	shielding = false;
 
 	return true;
@@ -154,8 +159,8 @@ int Player2::getBasicDamage() {
 //Action and animation
 void Player2::run(int direc)
 {
-	stand->setVisible(false);
-	runAnimate->setVisible(true);
+	//stand->setVisible(false);
+	//runAnimate->setVisible(true);
 
 	if (direc == direction::left) {
 		auto action = RepeatForever::create(MoveBy::create(1, Vec2(-200, 0)));
@@ -180,8 +185,8 @@ void Player2::run(int direc)
 }
 
 void Player2::stopRunning() {
-	runAnimate->setVisible(false);
-	stand->setVisible(true);
+	//runAnimate->setVisible(false);
+	//stand->setVisible(true);
 }
 
 void Player2::jump() {
@@ -192,13 +197,13 @@ void Player2::jump() {
 void Player2::shoot() {
 	stand->setVisible(false);
 	shootAnimate->setVisible(true);
-	runAnimate->setVisible(false);
+	//runAnimate->setVisible(false);
 }
 
 void Player2::stopShooting() {
 	stand->setVisible(true);
 	shootAnimate->setVisible(false);
-	runAnimate->setVisible(false);
+	//runAnimate->setVisible(false);
 }
 
 void Player2::heal(int value) {
@@ -295,4 +300,19 @@ float Player2::getPowerBarPercentage() {
 void Player2::setPowerBarVisiable(bool v) {
 	powerBar->setVisible(v);
 	powerBarFrame->setVisible(v);
+}
+
+void Player2::beingHit() {
+	stand->setVisible(false);
+	injuredAnimate->setVisible(true);
+	auto delay = DelayTime::create(0.5f);
+	auto sq = Sequence::create(delay, CallFunc::create(CC_CALLBACK_0(Player2::restoreStand, this)), NULL);
+
+	injuredAnimate->runAction(sq);
+}
+
+void Player2::restoreStand() {
+	stand->setVisible(true);
+	injuredAnimate->setVisible(false);
+	shootAnimate->setVisible(false);
 }
