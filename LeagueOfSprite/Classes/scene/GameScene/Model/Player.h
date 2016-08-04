@@ -5,7 +5,7 @@
 #include "cocos2d.h"
 
 #include "Weapon.h"
-#include "Constant.h"
+#include ".\public\Constant.h"
 
 USING_NS_CC;
 
@@ -34,6 +34,8 @@ public:
 	//damage
 	void setBasicDamage(int damage);
 	int getBasicDamage();
+	void setUpdateDamage(int damage);
+	int getUpdateDamage();
 
 	//action
 	void run(int direction);
@@ -69,6 +71,7 @@ private:
 	int score;
 	int exp;
 	int basicDamage;
+	int updateDamage;
 
 	//animation
 	Sprite* stand;

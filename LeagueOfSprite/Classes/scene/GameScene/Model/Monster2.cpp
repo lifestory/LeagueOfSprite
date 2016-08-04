@@ -71,23 +71,8 @@ bool Monster2::init() {
 	injuredAnimate->setVisible(false);
 	this->addChild(injuredAnimate, 1);
 
-	//forwarding animation
-	/*auto forwarding = Animation::create();
-	for (int i = 0; i < 1; i++) {
-	char filename[128] = { 0 };
-	sprintf(filename, "Model/Monster2/stand/stand_%d.png", i);
-	forwarding->addSpriteFrameWithFileName(filename);
-	}
-	forwarding->setDelayPerUnit(0.5f);
-	auto forwardingAction = Animate::create(forwarding);
-	forwardAnimate = Sprite::create("Model/Monster2/forward/forward_0.png");
-	forwardAnimate->runAction(RepeatForever::create(forwardingAction));
-	forwardAnimate->setVisible(false);
-	this->addChild(forwardAnimate, 1);*/
-
 	auto body = PhysicsBody::createBox(standAnimate->getContentSize()*0.8, PhysicsMaterial(0.8f, 0.0f, 0.99f));
 	body->setRotationEnable(false);
-	//body->setDynamic(false);
 	body->setVelocityLimit(200);
 	this->setPhysicsBody(body);
 	this->getPhysicsBody()->setTag(Constant::getMonster2Tag());
@@ -115,7 +100,6 @@ void Monster2::beingHit() {
 void Monster2::attacking() {
 	standAnimate->setVisible(false);
 	attackAnimate->setVisible(true);
-	//auto delay = DelayTime::create(0.2f);
 	auto sq = Sequence::create(attackingAction, CallFunc::create(CC_CALLBACK_0(Monster2::restoreStand, this)), NULL);
 	attackAnimate->runAction(sq);
 }
@@ -128,7 +112,6 @@ void Monster2::restoreStand() {
 
 void Monster2::releaseMonster2() {
 	if (monster2_ != NULL) {
-		//Monster2_->removeAllChildrenWithCleanup(true);
 		monster2_->removeFromParentAndCleanup(true);
 		monster2_ = NULL;
 	}
@@ -152,9 +135,6 @@ int Monster2::getBasicDamage() {
 
 void Monster2::run(int direc, float speed)
 {
-	//standAnimate->setVisible(false);
-	//forwardAnimate->setVisible(true);
-
 	if (direc == direction::left) {
 		if (monster2_->getPositionX() <= 512 + 20)
 		{

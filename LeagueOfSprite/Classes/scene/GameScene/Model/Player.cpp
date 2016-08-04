@@ -36,8 +36,6 @@ bool Player::init()
 	{
 		return false;
 	}
-    //Sprite* player_ = Sprite::create("Model\player.png");
-	//this->addChild(player_);
 	stand = Sprite::create("Model/Player/player.png");
 	this->addChild(stand, 1);
 	
@@ -88,8 +86,6 @@ bool Player::init()
 	powerBar->setType(ProgressTimer::Type::BAR);
 	powerBar->setMidpoint(Point(0, 0));
 	powerBar->setBarChangeRate(Point(1, 0));
-	//powerBar->setScale(1.5f);
-	//powerBar->setPercentage(100);
 	powerBar->setVisible(false);
 	powerBarFrame->setVisible(false);
 	this->addChild(powerBar, 1);
@@ -98,7 +94,8 @@ bool Player::init()
 	//HP
 	hp_num = 100;
 	//basic damage
-	basicDamage = 40;
+	basicDamage = 10;
+	updateDamage = 20;
 	shielding = false;
 
 	return true;
@@ -149,6 +146,14 @@ void Player::setBasicDamage(int damage) {
 
 int Player::getBasicDamage() {
 	return basicDamage;
+}
+//upate damage value
+void Player::setUpdateDamage(int damage) {
+	updateDamage = damage;
+}
+
+int Player::getUpdateDamage() {
+	return updateDamage;
 }
 
 //Action and animation
@@ -211,7 +216,6 @@ void Player::heal(int value) {
 void Player::releasePlayer() {
 	if (player_ != NULL) {
 		player_->removeFromParentAndCleanup(true);
-		//player_->removeAllChildrenWithCleanup(true);
 		player_ = NULL;
 	}
 }

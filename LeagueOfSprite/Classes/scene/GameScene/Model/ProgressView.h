@@ -27,7 +27,7 @@ public:
 	
 private:
 	//设置前景血条显示的长度  
-	void setTextureRect(const CCRect &rect);
+	void setTextureRect(const Rect &rect);
 
 	//血条
 	Sprite* pBack;

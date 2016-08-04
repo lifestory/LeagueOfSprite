@@ -20,11 +20,9 @@ bool HelpScene::init() {
 
 	auto image1 = Sprite::create("HelpScene/single.png");
 	image1->setPosition(visibleSize.width / 2-image1->getContentSize().width/2, visibleSize.height / 2);
-	this->addChild(image1, 1);
 
 	auto image2 = Sprite::create("HelpScene/solo.png");
 	image2->setPosition(visibleSize.width / 2+image2->getContentSize().width/2, visibleSize.height / 2);
-	this->addChild(image2, 1);
 
 	back = MenuItemImage::create("HelpScene/backClickBefore.png", "HelpScene/backClickAfter.png", CC_CALLBACK_1(HelpScene::ClickBack, this));
 	back->setPosition(visibleSize.width / 2, visibleSize.height*0.1);

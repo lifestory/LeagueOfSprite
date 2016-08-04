@@ -1,6 +1,8 @@
 #include "GameManager.h"
 
 int GameManager::gameLevel = 1;
+int GameManager::playerweapontype = 1;
+int GameManager::player2weapontype = 1;
 
 GameManager* GameManager::gameManager = NULL;
 
@@ -20,4 +22,21 @@ void GameManager::setGameLevel(int level) {
 		gameLevel = level;
 	}
 	
+}
+
+int GameManager::getPlayweapon()
+{
+	return playerweapontype;
+}
+void GameManager::setPlayweapon(int type)
+{
+	playerweapontype = type;
+}
+int GameManager::getPlay2weapon()
+{
+	return player2weapontype;
+}
+void GameManager::setPlay2weapon(int type)
+{
+	player2weapontype = type;
 }

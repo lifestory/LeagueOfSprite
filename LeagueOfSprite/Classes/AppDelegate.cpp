@@ -48,7 +48,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     }
 
     // turn on display FPS
-    director->setDisplayStats(true);
+    //director->setDisplayStats(true);
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
@@ -80,6 +80,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // run
     director->runWithScene(scene);
 
+
 	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/startMusic.mp3");
 	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/gameSceneMusic.mp3");
 	SimpleAudioEngine::getInstance()->preloadEffect("Sound/Click.wav");
@@ -87,6 +88,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	SimpleAudioEngine::getInstance()->preloadEffect("Sound/playerSkills/shield.wav");
 	SimpleAudioEngine::getInstance()->preloadEffect("Sound/playerSkills/heal.wav");
 	SimpleAudioEngine::getInstance()->preloadEffect("Sound/playerSkills/storm.wav");
+
 
     return true;
 }
@@ -96,17 +98,13 @@ void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
 
     // if you use SimpleAudioEngine, it must be pause
-    SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+    // SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 }
 
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground() {
     Director::getInstance()->startAnimation();
 
-
     // if you use SimpleAudioEngine, it must resume here
-	if (SoundManager::getInstance()->getMusic()) {
-		SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-	}
-    
+    // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 }

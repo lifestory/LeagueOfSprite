@@ -24,9 +24,7 @@ Player2* Player2::getInstance()
 	if (player2_ == NULL)
 	{
 		player2_ = Player2::create();
-		//Player2_->setPosition(100, 200);
 	}
-
 	return player2_;
 }
 
@@ -36,24 +34,8 @@ bool Player2::init()
 	{
 		return false;
 	}
-	//Sprite* Player2_ = Sprite::create("Model\Player2.png");
-	//this->addChild(Player2_);
 	stand = Sprite::create("Model/Player2/player2_stand.png");
 	this->addChild(stand, 1);
-
-	//running animation
-	/*auto running = Animation::create();
-	for (int i = 0; i < 1; i++) {
-		char filename[128] = { 0 };
-		sprintf(filename, "Model/Player/run/run_%d.png", i);
-		running->addSpriteFrameWithFileName(filename);
-	}
-	running->setDelayPerUnit(0.5f);
-	auto runningAction = Animate::create(running);
-	runAnimate = Sprite::create("Model/Player/run/run_0.png");
-	runAnimate->runAction(RepeatForever::create(runningAction));
-	this->addChild(runAnimate, 1);
-	runAnimate->setVisible(false);*/
 
 	//shoot animation
 	shootAnimate = Sprite::create("Model/Player2/player2_attack.png");
@@ -93,8 +75,6 @@ bool Player2::init()
 	powerBar->setType(ProgressTimer::Type::BAR);
 	powerBar->setMidpoint(Point(0, 0));
 	powerBar->setBarChangeRate(Point(1, 0));
-	//powerBar->setScale(1.5f);
-	//powerBar->setPercentage(100);
 	powerBar->setVisible(false);
 	powerBarFrame->setVisible(false);
 	this->addChild(powerBar, 1);
@@ -102,8 +82,9 @@ bool Player2::init()
 
 	//HP
 	hp_num = 100;
-	//basic damage
-	basicDamage = 40;
+
+	basicDamage = 10;
+	updateDamage = 20;
 	shielding = false;
 
 	return true;
@@ -155,13 +136,19 @@ void Player2::setBasicDamage(int damage) {
 int Player2::getBasicDamage() {
 	return basicDamage;
 }
+//upate damage value
+void Player2::setUpdateDamage(int damage) {
+	updateDamage = damage;
+}
+
+int Player2::getUpdateDamage() {
+	return updateDamage;
+}
+
 
 //Action and animation
 void Player2::run(int direc)
 {
-	//stand->setVisible(false);
-	//runAnimate->setVisible(true);
-
 	if (direc == direction::left) {
 		auto action = RepeatForever::create(MoveBy::create(1, Vec2(-200, 0)));
 		action->setTag(actionDir::moveLeft);
@@ -197,13 +184,11 @@ void Player2::jump() {
 void Player2::shoot() {
 	stand->setVisible(false);
 	shootAnimate->setVisible(true);
-	//runAnimate->setVisible(false);
 }
 
 void Player2::stopShooting() {
 	stand->setVisible(true);
 	shootAnimate->setVisible(false);
-	//runAnimate->setVisible(false);
 }
 
 void Player2::heal(int value) {
@@ -221,7 +206,6 @@ void Player2::heal(int value) {
 void Player2::releasePlayer2() {
 	if (player2_ != NULL) {
 		player2_->removeFromParentAndCleanup(true);
-		//Player2_->removeAllChildrenWithCleanup(true);
 		player2_ = NULL;
 	}
 }

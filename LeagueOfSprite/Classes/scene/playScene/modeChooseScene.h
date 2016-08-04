@@ -6,7 +6,8 @@
 
 #include "HelloWorldScene.h"
 #include "LevelChooseScene.h"
-#include "SoloScene.h"
+#include ".\scene\playScene\SoloMode\soloscene.h"
+
 
 USING_NS_CC;
 

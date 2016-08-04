@@ -7,9 +7,9 @@
 //#include "cocos-ext.h"
 //#include "ui\CocosGUI.h"
 
-#include "modeChooseScene.h"
-#include "GameScene.h"
-#include "GameManager.h"
+#include ".\scene\playScene\modeChooseScene.h"
+#include ".\scene\GameScene\GameScene.h"
+#include ".\public\gameManager\GameManager.h"
 
 //USING_NS_CC_EXT;
 USING_NS_CC;
@@ -22,12 +22,6 @@ public:
 	static LevelChooseScene* createScene();
 	virtual bool init();
 	CREATE_FUNC(LevelChooseScene);
-
-	
-
-	//void onTouchEnded(Touch*touch, Event *unused_event);
-	//bool onTouchBegan(Touch * touch, Event *unused_event);
-	//void onTouchMoved(Touch *touch, Event *unused_event);
 
 	//void addScrollView();
 

@@ -6,10 +6,11 @@
 #include "cocostudio\CocoStudio.h"
 
 #include ".\scene\GameScene\Model\Player.h"
-#include "Weapon.h"
-#include "ProgressView.h"
+#include ".\scene\GameScene\Model\Weapon.h"
+#include ".\scene\GameScene\Model\ProgressView.h"
 #include "WeaponBezier.h"
 #include "MonsterController.h"
+#include ".\public\gameManager\GameManager.h"
 
 USING_NS_CC;
 
@@ -26,6 +27,7 @@ public:
 	bool getSecondJump();
 	void setOnAir(bool set);
 	void setSecondJump(bool set);
+	void weaponChange();
 
 	void releasePlayerController();
 
@@ -38,8 +40,7 @@ public:
 	//¼üÅÌ¿ØÖÆ
 	virtual void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
 	virtual void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
-	//static CCEaseInOut* createParabola(float t, CCPoint staPos, CCPoint endPos, float height = 0, float angle = 0);
-
+	
 	//skill control
 	void releaseThunder();
 	void resetThunder();
@@ -57,6 +58,8 @@ public:
 	void resetShield();
 	bool getShield();
 
+	//update red and blue
+	void updateRedAndBluebar(float t);
 	//power bar
 	void updatePowerBar(float t);
 
@@ -66,7 +69,10 @@ public:
 
 	//blue bar
 	void updateBluebarforConsuming(int value);
+	void updateBluebarforIncreasing(int value);
+	void updateBlue(int value);
 	ProgressView* getBloodBar();
+	ProgressView* getBlueBar();
 	
 	//controll weapon shooting speed
 	void weaponShootingSpeedController(float dt);
@@ -80,7 +86,10 @@ private:
 	bool secondJump;
 	bool canShoot;
 	bool keyPressed;
-
+	
+	//weapon
+	Sprite* weaponbasic;
+	Sprite* weaponupdate;
 	// skill set --thunder
 	ProgressTimer *thunderTimer;
 	Sprite *thunder;

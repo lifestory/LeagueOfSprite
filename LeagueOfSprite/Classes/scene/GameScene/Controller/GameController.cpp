@@ -9,29 +9,6 @@ bool GameController::init() {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	/*auto label = Label::create("You Win!", "Arial", 80);
-	label->setColor(Color3B::YELLOW);
-
-	label->setPosition(visibleSize.width / 2, visibleSize.height / 2 + 200);
-	this->addChild(label, 1);
-	//again
-	next = MenuItemImage::create("GameScene/Gameover/ContinueClickBefore.png", "GameScene/Gameover/ContinueClickAfter.png", CC_CALLBACK_0(GameController::clickNext, this));
-	next->setPosition(visibleSize.width / 2, visibleSize.height / 2 + 80);
-
-	//Restart
-	again = MenuItemImage::create("GameScene/Gameover/RestartClickBefore.png", "GameScene/Gameover/RestartClickAfter.png", CC_CALLBACK_0(GameController::clickAgain, this));
-	again->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-
-	//JumptoMainmenu
-	back = MenuItemImage::create("GameScene/Gameover/MenuClickBefore.png", "GameScene/Gameover/MenuClickAfter.png", CC_CALLBACK_0(GameController::clickMenu, this));
-	back->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 80);
-
-
-	menu = Menu::create(again, next, back, NULL);
-	menu->setPosition(Point::ZERO);
-
-	this->addChild(menu, 2);*/
-
 	return true;
 }
 

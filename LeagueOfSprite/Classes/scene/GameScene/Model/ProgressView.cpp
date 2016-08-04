@@ -60,13 +60,11 @@ void ProgressView::setCurrentProgress(int curHP_)
 	float width = curHP_ * scale;
     float height = pFront->getContentSize().height;
 	CCPoint sta = pFront->getTextureRect().origin;
-	log("widht = %f\n", width);
-	log("height = %f\n", height);
-	CCRect re = CCRectMake(sta.x, sta.y, width, height);
+	Rect re = CCRectMake(sta.x, sta.y, width, height);
 	setTextureRect(re);
 }
 
-void ProgressView::setTextureRect(const CCRect &rect)
+void ProgressView::setTextureRect(const Rect &rect)
 {
 	pFront->setTextureRect(rect);
 }

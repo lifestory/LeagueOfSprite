@@ -4,10 +4,16 @@
 
 Sprite* Weapon::newWeapon(Vec2 position, float v)
 {
-	
-	//Sprite * new_weapon = Sprite::create("Model/stone.png");
 	auto new_weapon = new Weapon();
-	new_weapon->initWithFile("Model/Weapon/player_weapon.png");
+	if (GameManager::getInstance()->getPlayweapon() == 1)
+	{
+		new_weapon->initWithFile("Model/Weapon/player_weapon.png");
+	}
+	else if (GameManager::getInstance()->getPlayweapon() == 2)
+	{
+		new_weapon->initWithFile("Model/Weapon/player_weapon_update.png");
+	}
+	
 	new_weapon->autorelease();
 	auto weaponBody = PhysicsBody::createBox(new_weapon->getContentSize(), PhysicsMaterial(0.1f, 0.0f, 0.99f));
 	
@@ -32,11 +38,6 @@ Sprite* Weapon::newWeapon(Vec2 position, float v)
 
 	new_weapon->runAction(RepeatForever::create(RotateBy::create(0.5, 360)));
 
-	std::string name = "hello";
-
-	//auto s = Director::getInstance()->getScheduler();
-	//s->schedule(CC_CALLBACK_1(Weapon::updateWeaponAngle, new_weapon, new_weapon, name), new_weapon, 0.0, CC_REPEAT_FOREVER, 0.0, false, "end");
-
 	SimpleAudioEngine::getInstance()->playEffect("Sound/shoot.wav");
 	return new_weapon;
 }
@@ -60,7 +61,15 @@ Sprite* Weapon::newMonsterWeapon(Vec2 position, float v, int type) {
 	else if (type == Constant::getMonster3ArrowTag()) {
 		new_weapon = Sprite::create("Model/Weapon/monster3_weapon.png");
 	} else if (type == Constant::getPlayer2ArrowTag()) {
-		new_weapon = Sprite::create("Model/Weapon/player2_weapon.png");
+		//new_weapon = Sprite::create("Model/Weapon/player2_weapon.png");
+		if (GameManager::getInstance()->getPlay2weapon() == 1)
+		{
+			new_weapon = Sprite::create("Model/Weapon/player2_weapon.png");
+		}
+		else if (GameManager::getInstance()->getPlay2weapon() == 2)
+		{
+			new_weapon = Sprite::create("Model/Weapon/player2_weapon_update.png");
+		}
 	}
 	
 	auto weaponBody = PhysicsBody::createBox(new_weapon->getContentSize(), PhysicsMaterial(0.1f, 0.0f, 0.99f));
@@ -91,10 +100,6 @@ Sprite* Weapon::newMonsterWeapon(Vec2 position, float v, int type) {
 	if (type != Constant::getPlayer2ArrowTag()) {
 		new_weapon->runAction(RepeatForever::create(RotateBy::create(0.5, 360)));
 	}
-	
-	//std::string name = "hello";
-	//auto s = Director::getInstance()->getScheduler();
-	//s->schedule(CC_CALLBACK_1(Weapon::updateWeaponAngle, new_weapon, new_weapon, name), new_weapon, 0, CC_REPEAT_FOREVER, 0, false, "end");
-	//SimpleAudioEngine::getInstance()->playEffect("Sound/shoot.wav");
+
 	return new_weapon;
 }

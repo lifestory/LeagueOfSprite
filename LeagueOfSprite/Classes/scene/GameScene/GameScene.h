@@ -5,15 +5,16 @@
 #include "cocos2d.h"
 
 #include "HelloWorldScene.h"
-#include "LevelChooseScene.h"
-#include "PlayerController.h"
-#include "MonsterController.h"
-#include "Constant.h"
-#include "SoundManager.h"
+#include ".\scene\playScene\SingleMode\LevelChooseScene.h"
+#include ".\scene\GameScene\Controller\PlayerController.h"
+#include ".\scene\GameScene\Controller\MonsterController.h"
+#include ".\public\Constant.h"
 #include "GamePause.h"
-#include "ProgressView.h"
-#include "GameController.h"
-#include "GameManager.h"
+#include ".\public\soundManager\SoundManager.h"
+#include ".\scene\GameScene\Model\ProgressView.h"
+#include ".\scene\GameScene\Controller\GameController.h"
+//#include ".\scene\playScene\SingleMode\LevelChoose.h"
+#include ".\public\gameManager\GameManager.h"
 
 #include "SimpleAudioEngine.h"
 #include "ui/CocosGUI.h"
@@ -40,7 +41,7 @@ public:
 	virtual void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
 	virtual void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
 	
-	void ClickStop(CCObject* sender);
+	void ClickStop(Ref* sender);
 
 	void update(float t);
 

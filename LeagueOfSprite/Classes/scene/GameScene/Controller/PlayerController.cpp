@@ -17,8 +17,6 @@ enum actionDir
 };
 
 PlayerController* PlayerController::playercontroller_ = NULL;
-//Player* PlayerController::player_ = NULL;
-
 
 PlayerController* PlayerController::getInstance()
 {
@@ -45,6 +43,15 @@ bool PlayerController::init()
 	initSkills();
 	initSkillsAnimation();
 
+	weaponbasic = Sprite::create("Model/Weapon/player_weapon.png");
+	weaponbasic->setPosition(100, 440);
+	weaponupdate = Sprite::create("Model/Weapon/player_weapon_update.png");
+	weaponupdate->setPosition(100, 440);
+	weaponbasic->setVisible(true);
+	weaponupdate->setVisible(false);
+	this->addChild(weaponbasic, 2);
+	this->addChild(weaponupdate, 2);
+
 	//add keyboard listener
 	auto listener = EventListenerKeyboard::create();
 	listener->onKeyPressed = CC_CALLBACK_2(PlayerController::onKeyPressed, this);
@@ -52,6 +59,8 @@ bool PlayerController::init()
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
 	this->schedule(schedule_selector(PlayerController::weaponShootingSpeedController), 1.0f);
+	
+	this->schedule(schedule_selector(PlayerController::updateRedAndBluebar), 5.0f);
 
 	return true;
 }
@@ -85,61 +94,81 @@ void PlayerController::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event
 	else if (keyCode == EventKeyboard::KeyCode::KEY_S) {
 		//player_->run(direction::down);
 	}
-	else if (keyCode == EventKeyboard::KeyCode::KEY_J) {
-		//this->addChild(Weapon::newWeapon(player_->getPosition()));
-		//player_->shoot();
+	else if (keyCode == EventKeyboard::KeyCode::KEY_TAB) {
+		weaponChange();
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_K) {
 		if (isReleasingThunder != true) {
-			if (bluebar->getCurrentProgress() >= 40) {
+			if (bluebar->getCurrentProgress() >= 20) {
 				isReleasingThunder = true;
 				releaseThunder();
-				updateBluebarforConsuming(40);
+				updateBluebarforConsuming(20);
+				updateBlue(player_->getMP() - 20);
 				SimpleAudioEngine::getInstance()->playEffect("Sound/playerSkills/thunder.wav");
 			}
 		}
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_L) {
 		if (isHealing != true) {
-			if (bluebar->getCurrentProgress() >= 10) {
+			if (bluebar->getCurrentProgress() >= 15) {
 				isHealing = true;
 				releaseHeal();
 				player_->heal(player_->getHP()+10);
 				updateBloodbar(player_->getHP());
-				updateBluebarforConsuming(10);
+				updateBluebarforConsuming(15);
+				updateBlue(player_->getMP() - 15);
 				SimpleAudioEngine::getInstance()->playEffect("Sound/playerSkills/heal.wav");
 			}
 		}
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_N) {
 		if (isStorm != true) {
-			if (bluebar->getCurrentProgress() >= 20) {
+			if (bluebar->getCurrentProgress() >= 25) {
 				releaseStorm();
-				updateBluebarforConsuming(20);
+				updateBluebarforConsuming(25);
+				updateBlue(player_->getMP() - 25);
 				SimpleAudioEngine::getInstance()->playEffect("Sound/playerSkills/storm.wav");
 			}
 		}
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_M) {
 		if (isShield != true) {
-			if (bluebar->getCurrentProgress() >= 30) {
+			if (bluebar->getCurrentProgress() >= 15) {
 				isShield = true;
 				releaseShield();
-				updateBluebarforConsuming(30);
+				updateBluebarforConsuming(15);
+				updateBlue(player_->getMP() - 15);
 				SimpleAudioEngine::getInstance()->playEffect("Sound/playerSkills/shield.wav");
 			}
 		}
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
-		if (canShoot == true) {
-			totalTimeforPowerBar = 0.0;
-			player_->setPowerBarVisiable(true);
-			player_->setPowerBar(0.0);
-			player_->schedule(schedule_selector(PlayerController::updatePowerBar), 0.1f);
-			player_->shoot();
+		if (GameManager::getInstance()->getPlayweapon() == 1)
+		{
+			if (canShoot == true) {
+				totalTimeforPowerBar = 0.0;
+				player_->setPowerBarVisiable(true);
+				player_->setPowerBar(0.0);
+				player_->schedule(schedule_selector(PlayerController::updatePowerBar), 0.1f);
+
+				player_->shoot();
+			}
 			keyPressed = true;
 		}
-		
+		else if (GameManager::getInstance()->getPlayweapon() == 2)
+		{
+			if (canShoot == true && bluebar->getCurrentProgress() >= 5) {
+				totalTimeforPowerBar = 0.0;
+				player_->setPowerBarVisiable(true);
+				player_->setPowerBar(0.0);
+				player_->schedule(schedule_selector(PlayerController::updatePowerBar), 0.1f);
+				updateBluebarforConsuming(5);
+				updateBlue(player_->getMP() - 5);
+				player_->shoot();
+			}
+			
+			keyPressed = true;
+		}
 	}
 
 }
@@ -149,7 +178,7 @@ float PlayerController::totalTimeforPowerBar;
 void PlayerController::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
 	
 	if (keyCode == EventKeyboard::KeyCode::KEY_A) {
-		player_		->stopRunning();
+		player_->stopRunning();
 		player_->stopActionByTag(actionDir::moveLeft);
 	} else if (keyCode == EventKeyboard::KeyCode::KEY_D) {
 		player_->stopRunning();
@@ -160,8 +189,8 @@ void PlayerController::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* even
 	} else if (keyCode == EventKeyboard::KeyCode::KEY_S) {
 		player_->stopRunning();
 		player_->stopActionByTag(actionDir::moveDown);
-	} else if (keyCode == EventKeyboard::KeyCode::KEY_J) {
-		
+	} else if (keyCode == EventKeyboard::KeyCode::KEY_TAB) {
+
 	} else if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
 		if (canShoot == true && keyPressed == true) {
 			player_->setPowerBarVisiable(false);
@@ -206,18 +235,15 @@ void PlayerController::releasePlayerController() {
 void PlayerController::releaseThunder() {
 	thunder->setVisible(false);
 	thunderAnimation->setVisible(true);
-	//thunderAnimation->runAction(thundingAction);
 	playThunderAnimate();
 	auto to = ProgressTo::create(5.0f, 100);
 
-	//auto action = CSLoader::createTimeline("Model/Player/skills/Node.csd");
-
 	thunderTimer->runAction(Sequence::create(to, CallFunc::create(CC_CALLBACK_0(PlayerController::resetThunder, this)), NULL));
+
 }
 
 void PlayerController::resetThunder() {
 	thunder->setVisible(true);
-	//thunderAnimation->setVisible(false);
 	thunderTimer->setPercentage(0);
 	isReleasingThunder = false;
 }
@@ -238,6 +264,7 @@ void PlayerController::createBloodBar() {
 	this->addChild(avatar, 2);
 	this->addChild(bloodbar, 2);
 
+	
 	//create bluebar
 	bluebar = new ProgressView();
 	bluebar->setPosition(Point(200, 580));
@@ -362,7 +389,6 @@ void PlayerController::releaseHeal() {
 
 void PlayerController::resetHeal() {
 	heal->setVisible(true);
-	//thunderAnimation->setVisible(false);
 	healTimer->setPercentage(0);
 	isHealing = false;
 }
@@ -395,7 +421,6 @@ void PlayerController::releaseStorm() {
 	stormSprite->setPhysicsBody(body);
 
 	this->addChild(stormSprite, 2);
-	//auto spawn = Spawn::createWithTwoActions(RepeatForever::create(MoveBy::create(1.0f, Vec2(100, 0))), RepeatForever::create(stormAnimate));
 	stormSprite->runAction(RepeatForever::create(MoveBy::create(1.0f, Vec2(250, 0))));
 	stormSprite->runAction(RepeatForever::create(stormAnimate));
 }
@@ -432,7 +457,6 @@ void PlayerController::updatePowerBar(float t) {
 	}
 	else {
 		player_->setPowerBar(totalTimeforPowerBar / 1.5 * 100);
-		log("powerBar:   %f", player_->getPowerBar()->getPercentage());
 	}
 }
 
@@ -452,9 +476,21 @@ void PlayerController::updateBluebarforConsuming(int value) {
 		bluebar->setCurrentProgress(-1);
 	}
 }
+void PlayerController::updateBluebarforIncreasing(int value) {
+	if (bluebar->getCurrentProgress() < 100) {
+		bluebar->setCurrentProgress(bluebar->getCurrentProgress() + value);
+	}
+	else {
+		bluebar->setCurrentProgress(100);
+	}
+}
 
 ProgressView* PlayerController::getBloodBar() {
 	return bloodbar;
+}
+
+ProgressView* PlayerController::getBlueBar() {
+	return bluebar;
 }
 
 void PlayerController::updateBlood(int value) {
@@ -469,6 +505,62 @@ void PlayerController::updateBlood(int value) {
 	}
 }
 
+void PlayerController::updateBlue(int value) {
+	if (value > 0 && value < 100) {
+		player_->setMP(value);
+	}
+	else if (value >= 100) {
+		player_->setMP(100);
+	}
+	else if (value <= 0) {
+		player_->setMP(0);
+	}
+}
+
 void PlayerController::weaponShootingSpeedController(float dt) {
 	canShoot = true;
+}
+
+void PlayerController::weaponChange()
+{
+	if (GameManager::getInstance()->getPlayweapon() == 1)
+	{
+		GameManager::getInstance()->setPlayweapon(2);
+		weaponbasic->setVisible(false);
+		weaponupdate->setVisible(true);
+	}
+	else if (GameManager::getInstance()->getPlayweapon() == 2)
+	{
+		GameManager::getInstance()->setPlayweapon(1);
+		weaponbasic->setVisible(true);
+		weaponupdate->setVisible(false);
+	}
+}
+
+void PlayerController::updateRedAndBluebar(float t)
+{
+	int tmpHP = player_->getHP();
+	int tmpMP = player_->getMP();
+
+	if (tmpHP < 100)
+	{
+		if (tmpHP + 1 > 100) {
+			player_->setHP(100);
+			updateBloodbar(100);
+		} else {
+			player_->setHP(tmpHP + 1);
+			updateBloodbar(tmpHP + 1);
+		}
+	}
+	if (tmpMP <= 100)
+	{
+		if (tmpMP + 3 > 100) {
+			player_->setMP(100);
+			updateBluebarforIncreasing(3);
+		}
+		else {
+			player_->setMP(tmpMP + 3);
+			updateBluebarforIncreasing(3);
+		}
+	}
 }

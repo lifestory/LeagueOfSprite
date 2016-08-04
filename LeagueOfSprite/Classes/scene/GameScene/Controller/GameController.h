@@ -6,8 +6,8 @@
 
 #include "PlayerController.h"
 #include "MonsterController.h"
-#include "GamePause.h"
-#include "Constant.h"
+#include ".\scene\GameScene\GamePause.h"
+#include ".\public\Constant.h"
 
 USING_NS_CC;
 
@@ -36,11 +36,6 @@ public:
 	int getGameStatus();
 
 private:
-	/*MenuItemImage *again;
-	MenuItemImage *back;
-	MenuItemImage *next;
-	Menu *menu;*/
-	
 	static GameController* gameController;
 	//game status
 	int gameStatus;

@@ -6,12 +6,12 @@
 #include "cocostudio\CocoStudio.h"
 
 #include ".\scene\GameScene\Model\Player.h"
-#include "Weapon.h"
-#include "ProgressView.h"
-#include "WeaponBezier.h"
-#include "MonsterController.h"
-#include "PlayerController.h"
-#include "Player2.h"
+#include ".\scene\GameScene\Model\Weapon.h"
+#include ".\scene\GameScene\Model\ProgressView.h"
+#include ".\scene\GameScene\Controller\WeaponBezier.h"
+#include ".\scene\GameScene\Controller\MonsterController.h"
+#include ".\scene\GameScene\Controller\PlayerController.h"
+#include ".\scene\playScene\SoloMode\Model\player2.h"
 
 USING_NS_CC;
 
@@ -29,6 +29,7 @@ public:
 	void setOnAir(bool set);
 	void setSecondJump(bool set);
 	void weaponShootingSpeedController2(float dt);
+	void weaponChange();
 
 	void releasePlayer2Controller();
 
@@ -60,6 +61,8 @@ public:
 	void resetShield();
 	bool getShield();
 
+	//update red and blue
+	void updateRedAndBluebar(float t);
 	//power bar
 	void updatePowerBar(float t);
 
@@ -69,7 +72,10 @@ public:
 
 	//blue bar
 	void updateBluebarforConsuming(int value);
+	void updateBluebarforIncreasing(int value);
+	void updateBlue(int value);
 	ProgressView* getBloodBar();
+	ProgressView* getBlueBar();
 
 private:
 	static Player2Controller* player2controller_;
@@ -80,6 +86,10 @@ private:
 	bool secondJump;
 	bool canShoot;
 	bool keyPressed;
+
+	//weapon
+	Sprite* weaponbasic;
+	Sprite* weaponupdate;
 
 	// skill set --thunder
 	ProgressTimer *thunderTimer;

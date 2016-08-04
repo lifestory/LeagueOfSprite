@@ -2,10 +2,10 @@
 #ifndef MONSTER2_H
 #define MONSTER2_H
 
-#include "cocos2d.h";
+#include "cocos2d.h"
 
-#include "Constant.h"
-#include "Weapon.h"
+#include ".\public\Constant.h"
+#include ".\scene\GameScene\Model\Weapon.h"
 
 USING_NS_CC;
 

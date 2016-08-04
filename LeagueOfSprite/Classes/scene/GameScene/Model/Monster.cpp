@@ -87,7 +87,6 @@ bool Monster::init() {
 
 	auto body = PhysicsBody::createBox(standAnimate->getContentSize()*0.8, PhysicsMaterial(0.8f, 0.0f, 0.99f));
 	body->setRotationEnable(false);
-	//body->setDynamic(false);
 	body->setVelocityLimit(200);
 	this->setPhysicsBody(body);
 	this->getPhysicsBody()->setTag(Constant::getMonsterTag());
@@ -152,9 +151,6 @@ int Monster::getBasicDamage() {
 
 void Monster::run(int direc, float speed)
 {
-	//standAnimate->setVisible(false);
-	//forwardAnimate->setVisible(true);
-
 	if (direc == direction::left) {
 		if (monster_->getPositionX() <= 512 + 20)
 		{

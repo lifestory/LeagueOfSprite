@@ -30,17 +30,14 @@ bool LevelChooseScene::init() {
 
 	level1 = MenuItemImage::create("PlayScene/modeChooseScene/SingleMode/level1.png", "PlayScene/modeChooseScene/SingleMode/level1.png", CC_CALLBACK_1(LevelChooseScene::ClickLevel1, this));
 	level1->setPosition(visibleSize.width*0.2, visibleSize.height / 2);
-	//level1->setPosition(visibleSize.width*0.5, visibleSize.height/2);
 	menu->addChild(level1);
 
 	level2 = MenuItemImage::create("PlayScene/modeChooseScene/SingleMode/level2.png", "PlayScene/modeChooseScene/SingleMode/level2.png", CC_CALLBACK_1(LevelChooseScene::ClickLevel2, this));
 	level2->setPosition(visibleSize.width * 0.5, visibleSize.height / 2);
-	//level2->setPosition(visibleSize.width * 1.5, visibleSize.height / 2);
 	menu->addChild(level2);
 
 	level3 = MenuItemImage::create("PlayScene/modeChooseScene/SingleMode/level3.png", "PlayScene/modeChooseScene/SingleMode/level3.png", CC_CALLBACK_1(LevelChooseScene::ClickLevel3, this));
 	level3->setPosition(visibleSize.width * 0.8, visibleSize.height / 2);
-	//level3->setPosition(visibleSize.width * 2.5, visibleSize.height / 2);
 	menu->addChild(level3);
 
 

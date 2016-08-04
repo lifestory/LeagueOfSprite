@@ -90,13 +90,13 @@ Scene* GamePause::soloScene(RenderTexture* sqr) {
 }
 
 //continue
-void GamePause::ContinueGame(Object* pSender)
+void GamePause::ContinueGame(Ref* pSender)
 {
 	Director::getInstance()->popScene();
 }
 
 //restart
-void GamePause::RestartGame(Object* pSender)
+void GamePause::RestartGame(Ref* pSender)
 {
 	Director::getInstance()->popScene();
 	PlayerController::getInstance()->releasePlayerController();
@@ -106,28 +106,21 @@ void GamePause::RestartGame(Object* pSender)
 	Director::getInstance()->replaceScene(trans);
 }
 //jump to Mainmenu
-void GamePause::JumpMainmenu(Object* pSender)
+void GamePause::JumpMainmenu(Ref* pSender)
 {
-	//PlayerController::getInstance()->getParent()->removeAllChildrenWithCleanup(true);
-	//PlayerController::getInstance()->removeFromParent();
-	//MonsterController::getInstance()->removeFromParent();
-	//MonsterController::getInstance()->getParent()->removeAllChildrenWithCleanup(true);
-	//PlayerController::getInstance()->removeFromParentAndCleanup(true);
-	//MonsterController::getInstance()->removeFromParentAndCleanup(true);
 	Director::getInstance()->popScene();
 	PlayerController::getInstance()->releasePlayerController();
 	MonsterController::getInstance()->releaseMonsterController();
 	auto scene = HelloWorld::create();
 	auto trans = TransitionPageTurn::create(0.5f, scene, false);
 	Director::getInstance()->replaceScene(trans);
-	//CCDirector::sharedDirector()->replaceScene(HelloWorld::scene());
 }
 
-void GamePause::soloContinueGame(Object* pSender) {
+void GamePause::soloContinueGame(Ref* pSender) {
 	Director::getInstance()->popScene();
 }
 
-void GamePause::soloRestartGame(Object* pSender) {
+void GamePause::soloRestartGame(Ref* pSender) {
 	Director::getInstance()->popScene();
 	PlayerController::getInstance()->releasePlayerController();
 	Player2Controller::getInstance()->releasePlayer2Controller();
@@ -136,7 +129,7 @@ void GamePause::soloRestartGame(Object* pSender) {
 	Director::getInstance()->replaceScene(trans);
 }
 
-void GamePause::soloJumpMainmenu(Object* pSender) {
+void GamePause::soloJumpMainmenu(Ref* pSender) {
 	Director::getInstance()->popScene();
 	PlayerController::getInstance()->releasePlayerController();
 	Player2Controller::getInstance()->releasePlayer2Controller();

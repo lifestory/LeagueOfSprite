@@ -10,7 +10,6 @@ enum  direction {
 int dir = 0;
 
 MonsterController* MonsterController::monsterController = NULL;
-//Monster* MonsterController::monster = NULL;
 
 MonsterController* MonsterController::getInstance() {
 	if (monsterController == NULL) {
@@ -75,8 +74,6 @@ bool MonsterController::init() {
 	avatar->setPosition(Point(bloodbar->getPositionX() + 150, bloodbar->getPositionY()));
 	this->addChild(avatar, 2);
 	this->addChild(bloodbar, 2);
-
-	//this->schedule(schedule_selector(MonsterController::randomShoot), 1.5f);
 
 	return true;
 }
@@ -169,14 +166,11 @@ void MonsterController::monsterShoot(float t)
 
 void MonsterController::monster2Update(float t)
 {
-	//log("t = %f", t);
 	float f = CCRANDOM_0_1() * 4;
-	//log("f = %f", f);
-	//log("posY = %f", monster->getPositionY());
+
 	if (f >= 3 && monster2->getPositionY() < 115)
 	{
 		monster2->run(direction::up, 15);
-		//monster->run(direction::down, 15);
 	}
 	else {
 		if (dir == 0)
@@ -208,12 +202,9 @@ void MonsterController::monster2Shoot(float t)
 void MonsterController::monster3Update(float t)
 {
 	float f = CCRANDOM_0_1() * 4;
-	//log("f = %f", f);
-	//log("posY = %f", monster->getPositionY());
 	if (f >= 2.5 && monster3->getPositionY() < 115)
 	{
 		monster3->run(direction::up, 25);
-		//monster->run(direction::down, 15);
 	}
 	else {
 		if (dir == 0)
@@ -248,31 +239,14 @@ void MonsterController::monster3Shoot(float t)
 	}
 	else if (f < 0.8)
 	{
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 200, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 190, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 180, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 170, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 160, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 150, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 140, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 130, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 120, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 110, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 100, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 90, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 80, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 70, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 60, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 50, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 40, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 30, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 20, Constant::getMonster3ArrowTag()));
-		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 10, Constant::getMonster3ArrowTag()));
+		for (int i = 10; i < 180; i = i + 20)
+		{
+			this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), i, Constant::getMonster3ArrowTag()));
+		}
 	}
 	else
 	{
 		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 40, Constant::getMonster3ArrowTag()));
-		//this->addChild(Weapon::newMonsterWeapon(monster->getPosition(), 120));
 		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 120, Constant::getMonster3ArrowTag()));
 		this->addChild(Weapon::newMonsterWeapon(monster3->getPosition(), 80, Constant::getMonster3ArrowTag()));
 	}

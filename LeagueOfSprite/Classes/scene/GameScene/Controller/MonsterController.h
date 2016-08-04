@@ -4,13 +4,13 @@
 
 #include "cocos2d.h"
 
-#include "Monster.h"
-#include "Monster2.h"
-#include "Monster3.h"
+#include ".\scene\GameScene\Model\Monster.h"
+#include ".\scene\GameScene\Model\Monster2.h"
+#include ".\scene\GameScene\Model\Monster3.h"
 
-#include "ProgressView.h"
-#include "Weapon.h"
-#include "GameManager.h"
+#include ".\scene\GameScene\Model\ProgressView.h"
+#include ".\scene\GameScene\Model\Weapon.h"
+#include ".\public\gameManager\GameManager.h"
 
 USING_NS_CC;
 
